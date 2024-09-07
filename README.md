@@ -6,12 +6,23 @@ This project follows the MVC (Model-View-Controller) architectural pattern with 
 
 ## Directory Structure
 
-- **routes/**: Contains the route definitions. Routes are responsible for defining the endpoints and delegating the request handling to the appropriate controllers.
-- **controllers/**: Contains the controllers which hold the business logic. Controllers process the incoming requests, interact with the models, and send responses back to the client.
-- **views/**: Contains the view templates. This directory includes a `partials/` subdirectory that holds reusable parts of web pages, such as headers, footers, and navigation bars.
-- **public/**: Contains static assets like CSS, JavaScript, and images. These files are accessible to the client and are used for client-side functionality and styling.
-- **models/**: Contains the MongoDB schemas. Models define the structure of the data and interact with the database.
-- **.env**: Contains global parameters and environment variables. This file is used to store configuration settings like database connection strings, API keys, and other sensitive information.
+- **`routes/`**: Contains the route definitions. Routes are responsible for defining the endpoints and delegating the request handling to the appropriate controllers.
+- **`controllers/`**: Contains the controllers which hold the business logic. Controllers process the incoming requests, interact with the models, and send responses back to the client.
+- **`views/`**: Contains the view templates. This directory includes a `partials/` subdirectory that holds reusable parts of web pages, such as headers, footers, and navigation bars.
+- **`public/`**: Contains static assets like CSS, JavaScript, and images. These files are accessible to the client and are used for client-side functionality and styling.
+- **`models/`**: Contains the MongoDB schemas. Models define the structure of the data and interact with the database.
+- **`.env`**: Contains global parameters and environment variables. This file is used to store configuration settings like database connection strings, API keys, and other sensitive information.
+- **`public/css/styles.css`**: This file serves as global styling for all files.
+
+## Tools and Libraries
+
+This project uses the following tools and libraries:
+
+- **jQuery**: A fast, small, and feature-rich JavaScript library.
+- **Bootstrap**: A powerful, mobile-first front-end framework for faster and easier web development.
+- **Express**: A minimal and flexible Node.js web application framework.
+- **Mongoose**: An ODM (Object Data Modeling) library for MongoDB and Node.js.
+- **dotenv**: A module that loads environment variables from a `.env` file into `process.env`.
 
 ## Key Concepts
 
