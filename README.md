@@ -22,7 +22,11 @@ In this project, routes and controllers are separated to improve code organizati
 - **Routes**: Define the URL endpoints and map them to the corresponding controller functions.
 - **Controllers**: Contain the logic for handling requests, interacting with models, and returning responses.
 
+### API Versioning
 
+The project uses versioning for the API to manage changes and updates without breaking existing clients:
+
+- **/api/v1/**: This directory contains the routes and controllers for version 1 of the API. By separating the API into versions, we can introduce new features or changes in future versions (e.g., `/api/v2/`) without affecting the existing functionality of version 1.
 
 ## Getting Started
 
