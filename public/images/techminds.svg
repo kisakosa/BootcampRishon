@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="107" viewBox="0 0 500 107">
+  <defs>
+    <clipPath id="clip-techminds">
+      <rect width="500" height="107"/>
+    </clipPath>
+  </defs>
+  <g id="techminds" clip-path="url(#clip-techminds)">
+    <text id="TechMinds-2" data-name="TechMinds" transform="translate(47.146 78)" fill="#fff" font-size="80" font-family="HelveticaNeue-Bold, Helvetica Neue" font-weight="700"><tspan x="0" y="0">TechMinds</tspan></text>
+  </g>
+</svg>
