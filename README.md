@@ -28,6 +28,14 @@ The project uses versioning for the API to manage changes and updates without br
 
 - **/api/v1/**: This directory contains the routes and controllers for version 1 of the API. By separating the API into versions, we can introduce new features or changes in future versions (e.g., `/api/v2/`) without affecting the existing functionality of version 1.
 
+### Middleware
+
+Middleware in web development is like a series of checkpoints or filters that a request passes through before it reaches its final destination. Each checkpoint can do something useful, like checking if you're logged in, making sure your request is safe, or adding some extra information.
+
+### Module
+
+A module in Node.js is a reusable block of code whose existence does not impact other code unless explicitly imported.
+
 ## Getting Started
 
 1. Clone the repository.
