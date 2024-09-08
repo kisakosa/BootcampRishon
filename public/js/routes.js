@@ -36,13 +36,8 @@ function populateRoutesTable() {
           const tagsInfo = $('<div></div>').text(`Tags: ${place.tags.map(tag => tag.name).join(', ')}`);
           placeInfo.append(tagsInfo);
   
-          if (Array.isArray(place.coordinates)) {
-            const coordinatesInfo = $('<div></div>').text(`Coordinates: ${place.coordinates.map(coord => `(${coord.lat}, ${coord.lng})`).join(', ')}`);
-            placeInfo.append(coordinatesInfo);
-          } else {
-            const coordinatesInfo = $('<div></div>').text('Coordinates: N/A');
-            placeInfo.append(coordinatesInfo);
-          }
+          const coordinatesInfo = $('<div></div>').text(`Coordinates: (${place.coordinates.latitude}, ${place.coordinates.longitude})`);
+          placeInfo.append(coordinatesInfo);
           
           placeInfo.addClass('border-bottom');
           placesCell.append(placeInfo);
