@@ -8,7 +8,6 @@ const tagSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['category', 'filter'],
     required: true
   },
   name: {
