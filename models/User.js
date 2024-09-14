@@ -14,7 +14,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['customer', 'admin'],
         default: 'customer'
-    }
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    savedRoutes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Route'
+    }]
 });
 
 const User = mongoose.model('User', userSchema);
