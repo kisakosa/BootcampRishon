@@ -6,7 +6,7 @@ const tagSchema = new mongoose.Schema({
     enum: ['Place', 'Route'],  
     required: true,
   },
-  type: {
+  category: {
     type: String,
     required: true
   },
