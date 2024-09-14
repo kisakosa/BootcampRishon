@@ -37,13 +37,3 @@ exports.logout = (req, res) => {
         res.send('Logged out successfully.');
     });
 };
-
-// Admin content
-exports.adminContent = (req, res) => {
-    res.send('Admin content');
-};
-
-// Customer content
-exports.customerContent = (req, res) => {
-    res.send('Customer content');
-};
