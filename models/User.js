@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    name: {
+    email: {
         type: String,
         required: true,
         unique: true
@@ -15,10 +15,9 @@ const userSchema = new mongoose.Schema({
         enum: ['customer', 'admin'],
         default: 'customer'
     },
-    email: {
+    name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     savedRoutes: [{
         type: mongoose.Schema.Types.ObjectId,
