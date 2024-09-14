@@ -5,10 +5,16 @@ const placeSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String
+    },
+    img: {
+        type: String
+    },
     coordinates: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Coordinate'
+        ref: 'Coordinates'
     },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
