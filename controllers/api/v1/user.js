@@ -4,7 +4,7 @@ const User = require('../../models/User');
 exports.getAllUsers = async (req, res) => {
     try {
         // Fetch all Users from the database
-        const users = await User.find().sort({ _id: -1 });
+        const users = await User.find({}, '-password').sort({ _id: -1 });
 
         res.json(users);
     } catch (error) {
@@ -35,7 +35,7 @@ exports.createUser = async (req, res) => {
 exports.getUserById = async (req, res) => {
     try {
         // Fetch the User by ID from the database
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id, '-password');
 
         res.json(user);
     } catch (error) {
@@ -52,7 +52,8 @@ exports.updateUser = async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(
             req.params.id,
             req.body,
-            { new: true }
+            { new: true },
+            '-password'
         );
     } catch (error) {
         // If an error occurs, respond with an error status and message
