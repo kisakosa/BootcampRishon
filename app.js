@@ -17,6 +17,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // Middleware to serve static files from the 'public' directory
 app.use(express.static('public'));
+// Configure session middleware
+app.use(session({
+    secret: process.env.SESSION_SECRET, // Secret key for signing the session ID cookie
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGOURL,
+        collectionName: 'sessions' // Collection to store sessions
+    }),
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        secure: false, // Set to true if using HTTPS
+        httpOnly: true // Prevents client-side JavaScript from accessing the cookie
+    }
+}));
 
 // MongoDB connection setup
 mongoose.connect(process.env.MONGOURL);
