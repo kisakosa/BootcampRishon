@@ -29,6 +29,10 @@ console.log(process.env.MONGOURL);
 // Import and use routes
 app.use('/', require('./routes/index'));
 app.use('/api/v1/routes', require('./routes/api/v1/route'));
+app.use('/api/v1/users', require('./routes/api/v1/user'));
+app.use('/api/v1/tags', require('./routes/api/v1/tag'));
+app.use('/api/v1/places', require('./routes/api/v1/place'));
+app.use('/api/v1/coordinates', require('./routes/api/v1/coordinate'));
 
 // Start the server and listen on port specified in the environment variable (.env file)
 app.listen(process.env.PORT, () => {
