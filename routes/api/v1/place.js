@@ -1,7 +1,7 @@
 const express = require('express');
 const placeController = require('../../../controllers/api/v1/place'); // Import the controller
-const auth = require('../middleware/auth'); // Import the auth middleware
-const checkRole = require('../middleware/role'); // Import the role middleware
+const auth = require('../../../middleware/auth'); // Import the auth middleware
+const checkRole = require('../../../middleware/role'); // Import the role middleware
 const router = express.Router();
 
 // Route to get all Places
