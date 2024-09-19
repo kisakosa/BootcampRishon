@@ -27,6 +27,32 @@ exports.getAllRoutes = async (req, res) => {
     }
 };
 
+// Controller function to get a query of Routes
+exports.getRouteByQuery = async (req, res) => {
+    try {
+        // Fetch the query from the request body
+        const query = req.body;
+
+        // Fetch all Routes from the database that match the query
+        const Routes = await Route.find(query)
+            .sort({ _id: -1 })
+            .limit(1000)
+            .populate('tags')
+            .populate({
+                path: 'places',
+                populate: [
+                    { path: 'tags' },
+                    { path: 'coordinates' }
+                ]
+            });
+        res.json(Routes);
+    } catch (error) {
+        // If an error occurs, respond with an error status and message
+        console.error('Error fetching Routes:', error);
+        res.status(500).json({ error: 'An error occurred while fetching the Routes' });
+    }
+};
+
 // Controller function to create a new Route
 exports.createRoute = async (req, res) => {
     try {
