@@ -22,8 +22,9 @@ const userSchema = new mongoose.Schema({
     },
     savedRoutes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Route'
-    }]
+        ref: 'Route',
+        default: []
+    }],
 });
 
 // Hash the password before saving the user
