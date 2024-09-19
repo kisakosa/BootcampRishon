@@ -7,8 +7,8 @@ router.get('/', async (req, res) => {
     return res.render('index', { title: 'Home' });
 });
 
-router.get('/routes', async (req, res) => {
-    return res.render('routes', { title: 'Routes' });
+router.get('/auth', async (req, res) => {
+    return res.render('auth', { title: 'Auth' });
 });
 
 // Protected routes
