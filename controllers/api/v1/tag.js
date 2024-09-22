@@ -4,9 +4,10 @@ const Tag = require('../../../models/Tag'); // Import the Tag model
 exports.getAllTags = async (req, res) => {
     try {
         // Fetch all Tags from the database
-        const tags = await Tag.find().sort({ _id: -1 });
+        const tags = await Tag.find()
+            .sort({ _id: -1 });
 
-        res.json(tags);
+        res.json(tags.populate('category'));
     } catch (error) {
         // If an error occurs, respond with an error status and message
         console.error('Error fetching Tags:', error);
@@ -23,7 +24,7 @@ exports.createTag = async (req, res) => {
         // Save the Tag instance to the database
         await tag.save();
 
-        res.json(tag);
+        res.json(tag.populate('category'));
     } catch (error) {
         // If an error occurs, respond with an error status and message
         console.error('Error creating Tag:', error);
@@ -37,7 +38,7 @@ exports.getTagById = async (req, res) => {
         // Fetch the Tag by ID from the database
         const tag = await Tag.findById(req.params.id);
 
-        res.json(tag);
+        res.json(tag.populate('category'));
     } catch (error) {
         // If an error occurs, respond with an error status and message
         console.error('Error fetching Tag:', error);
@@ -55,7 +56,7 @@ exports.updateTag = async (req, res) => {
             { new: true }
         );
 
-        res.json(updatedTag);
+        res.json(updatedTag.populate('category'));
     } catch (error) {
         // If an error occurs, respond with an error status and message
         console.error('Error updating Tag:', error);
