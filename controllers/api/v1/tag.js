@@ -23,7 +23,9 @@ exports.createTag = async (req, res) => {
         const tag = new Tag(req.body);
 
         // Save the Tag instance to the database
-        await tag.save().then(tag => tag.populate('category').execPopulate());
+        await tag.save();
+
+        await tag.populate('category');
 
         res.json(tag);
     } catch (error) {
@@ -56,7 +58,7 @@ exports.updateTag = async (req, res) => {
             req.params.id,
             req.body,
             { new: true }
-        ).then(tag => tag.populate('category').execPopulate());
+        ).populate('category');
 
         res.json(updatedTag);
     } catch (error) {
