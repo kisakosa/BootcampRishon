@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { max } = require('moment');
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -13,12 +14,13 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['customer', 'admin'],
-        default: 'customer'
+        enum: ['user', 'admin'],
+        default: 'user'
     },
     name: {
         type: String,
-        required: true
+        required: true,
+        maxlength: 100
     },
     savedRoutes: [{
         type: mongoose.Schema.Types.ObjectId,
