@@ -51,6 +51,7 @@ app.use('/api/v1/users', require('./routes/api/v1/user'));
 app.use('/api/v1/tags', require('./routes/api/v1/tag'));
 app.use('/api/v1/places', require('./routes/api/v1/place'));
 app.use('/api/v1/coordinates', require('./routes/api/v1/coordinates'));
+app.use('/api/v1/categories', require('./routes/api/v1/category'));
 
 // Start the server and listen on port specified in the environment variable (.env file)
 app.listen(process.env.PORT, () => {
