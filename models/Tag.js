@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const tagSchema = new mongoose.Schema({
-  for: {
-    type: String,
-    enum: ['Place', 'Route'],  
-    required: true,
-  },
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
