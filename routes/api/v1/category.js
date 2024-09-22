@@ -19,7 +19,7 @@ router.put('/:id', auth, checkRole('admin'), categoryController.updateCategory);
 // Delete a category by ID
 router.delete('/:id', auth, checkRole('admin'), categoryController.deleteCategory);
 
-// Get all tags of a category
-router.get('/:id/tags', categoryController.getTagsByCategory);
+// Get all Tags for a Category
+router.get('/:id/tags', categoryController.getTagsForCategory);
 
 module.exports = router;

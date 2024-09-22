@@ -1,5 +1,5 @@
-const Category = require('../../models/Category');
-const Tag = require('../../models/Tag');
+const Category = require('../../../models/Category');
+const Tag = require('../../../models/Tag');
 
 // Controller function to get all Categories
 exports.getAllCategories = async (req, res) => {
