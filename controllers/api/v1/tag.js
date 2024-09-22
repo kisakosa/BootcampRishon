@@ -5,9 +5,10 @@ exports.getAllTags = async (req, res) => {
     try {
         // Fetch all Tags from the database
         const tags = await Tag.find()
+            .populate('category')
             .sort({ _id: -1 });
 
-        res.json(tags.populate('category'));
+        res.json(tags);
     } catch (error) {
         // If an error occurs, respond with an error status and message
         console.error('Error fetching Tags:', error);
@@ -22,9 +23,9 @@ exports.createTag = async (req, res) => {
         const tag = new Tag(req.body);
 
         // Save the Tag instance to the database
-        await tag.save();
+        await tag.save().then(tag => tag.populate('category').execPopulate());
 
-        res.json(tag.populate('category'));
+        res.json(tag);
     } catch (error) {
         // If an error occurs, respond with an error status and message
         console.error('Error creating Tag:', error);
@@ -36,9 +37,10 @@ exports.createTag = async (req, res) => {
 exports.getTagById = async (req, res) => {
     try {
         // Fetch the Tag by ID from the database
-        const tag = await Tag.findById(req.params.id);
+        const tag = await Tag.findById(req.params.id)
+            .populate('category');
 
-        res.json(tag.populate('category'));
+        res.json(tag);
     } catch (error) {
         // If an error occurs, respond with an error status and message
         console.error('Error fetching Tag:', error);
@@ -54,9 +56,9 @@ exports.updateTag = async (req, res) => {
             req.params.id,
             req.body,
             { new: true }
-        );
+        ).then(tag => tag.populate('category').execPopulate());
 
-        res.json(updatedTag.populate('category'));
+        res.json(updatedTag);
     } catch (error) {
         // If an error occurs, respond with an error status and message
         console.error('Error updating Tag:', error);
