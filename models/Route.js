@@ -26,6 +26,10 @@ const routeSchema = new mongoose.Schema({
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'Tag',
         default: []
+    },
+    isRelevant: {
+        type: Boolean,
+        default: true
     }
 });
 

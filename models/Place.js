@@ -19,7 +19,11 @@ const placeSchema = new mongoose.Schema({
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
-    }]
+    }],
+    isRelevant: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const Place = mongoose.model('Place', placeSchema);
