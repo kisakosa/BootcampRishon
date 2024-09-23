@@ -10,6 +10,11 @@ exports.register = async (req, res) => {
             return res.status(400).send('name, email, and password are required.');
         }
 
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailPattern.test(email)) {
+            return res.status(400).send('Invalid email format.');
+        }
+
         let user = await User.findOne({ email });
         if (user) {
             return res.status(400).send('User already registered.');
@@ -37,6 +42,11 @@ exports.login = async (req, res) => {
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(400).send('Email and password are required.');
+        }
+
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailPattern.test(email)) {
+            return res.status(400).send('Invalid email format.');
         }
 
         const user = await User.findOne({ email });
