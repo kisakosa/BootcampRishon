@@ -29,7 +29,10 @@ exports.register = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
             maxAge: 3600000 // 1 hour
-        }).send({ _id: user._id, name: user.name, email: user.email, role: user.role });
+        }).send({
+            message: 'Registration successful.',
+            user: { name: user.name, email: user.email, role: user.role }
+        });
     } catch (error) {
         console.error('Error registering user:', error);
         res.status(500).send('Internal server error.');
@@ -65,7 +68,10 @@ exports.login = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
             maxAge: 3600000 // 1 hour
-        }).send('Logged in successfully.');
+        }).send({
+            message: 'Logged in successfully.',
+            user: { name: user.name, email: user.email, role: user.role }
+        });
     } catch (error) {
         console.error('Error logging in user:', error);
         res.status(500).send('Internal server error.');
