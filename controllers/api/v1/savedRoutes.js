@@ -4,7 +4,7 @@ const User = require('../../../models/User');
 exports.getSavedRoutes = async (req, res) => {
     try {
         const userId = req.user._id;
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate('savedRoutes');
         if (!user) {
             return res.status(404).send('User not found.');
         }
@@ -20,7 +20,7 @@ exports.addSavedRoute = async (req, res) => {
     try {
         const userId = req.user._id;
         const { route } = req.body;
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate('savedRoutes');
         if (!user) {
             return res.status(404).send('User not found.');
         }
@@ -44,6 +44,9 @@ exports.removeSavedRoute = async (req, res) => {
         }
         user.savedRoutes = user.savedRoutes.filter(route => route._id.toString() !== routeId);
         await user.save();
+
+        await user.populate('savedRoutes');
+
         res.send(user.savedRoutes);
     } catch (error) {
         console.error('Error removing saved route:', error);

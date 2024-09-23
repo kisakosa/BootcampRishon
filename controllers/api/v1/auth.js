@@ -91,7 +91,8 @@ exports.logout = (req, res) => {
 
 // Get user profile
 exports.profile = (req, res) => {
-    res.send(req.user);
+    const { savedRoutes, ...userWithoutSavedRoutes } = req.user.toObject();
+    res.send(userWithoutSavedRoutes);
 };
 
 // Update name or password
