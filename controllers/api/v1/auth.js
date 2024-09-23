@@ -18,8 +18,13 @@ exports.register = async (req, res) => {
         user = new User({ name, email, password, role });
         await user.save();
 
-        const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET);
-        res.header('Authorization', token).send({ _id: user._id, name: user.name, email: user.email, role: user.role });
+        const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.cookie('authToken', token, { 
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 3600000 // 1 hour
+        }).send({ _id: user._id, name: user.name, email: user.email, role: user.role });
     } catch (error) {
         console.error('Error registering user:', error);
         res.status(500).send('Internal server error.');
@@ -44,8 +49,13 @@ exports.login = async (req, res) => {
             return res.status(400).send('Invalid email or password.');
         }
 
-        const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET);
-        res.header('Authorization', token).send('Logged in successfully.');
+        const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.cookie('authToken', token, { 
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 3600000 // 1 hour
+        }).send('Logged in successfully.');
     } catch (error) {
         console.error('Error logging in user:', error);
         res.status(500).send('Internal server error.');
@@ -54,11 +64,5 @@ exports.login = async (req, res) => {
 
 // Logout a user
 exports.logout = (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            console.error('Error logging out user:', err);
-            return res.status(500).send('Could not log out.');
-        }
-        res.send('Logged out successfully.');
-    });
+    res.clearCookie('authToken').send('Logged out successfully.');
 };
