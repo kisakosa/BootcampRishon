@@ -14,13 +14,7 @@ router.get('/:id', auth, checkRole('admin'), userController.getUserById);
 router.post('/', auth, checkRole('admin'), userController.createUser);
 
 // Route to update a user by ID
-router.put('/:id', auth, async (req, res, next) => {
-    if (req.user.role === 'admin' || req.user._id.toString() === req.params.id) {
-        next();
-    } else {
-        res.status(403).send('Access denied.');
-    }
-}, userController.updateUser);
+router.put('/:id', auth, checkRole('admin'), userController.updateUser);
 
 // Route to delete a user by ID
 router.delete('/:id', auth, checkRole('admin'), userController.deleteUser);

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 // Register a new user
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password } = req.body;
         if (!name || !email || !password) {
             return res.status(400).send('name, email, and password are required.');
         }
@@ -20,7 +20,7 @@ exports.register = async (req, res) => {
             return res.status(400).send('User already registered.');
         }
 
-        user = new User({ name, email, password, role });
+        user = new User({ name, email, password, role: 'user' });
         await user.save();
 
         const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -81,4 +81,47 @@ exports.login = async (req, res) => {
 // Logout a user
 exports.logout = (req, res) => {
     res.clearCookie('authToken').send('Logged out successfully.');
+};
+
+// Update name or password
+exports.updateUser = async (req, res) => {
+    try {
+        const { name, password, email } = req.body;
+
+        if (!name && !password && !email) {
+            return res.status(400).send('Name or password or email is required.');
+        }
+
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (email) {
+            if (!emailPattern.test(email)) {
+                return res.status(400).send('Invalid email format.');
+            }
+
+            const existingUser = await User.findOne({ email });
+            if (existingUser) {
+                return res.status(400).send('Email already registered.');
+            }
+        }
+
+        const user = await User.findById(req.user._id);
+
+        if (email) {
+            user.email = email;
+        }
+
+        if (name) {
+            user.name = name;
+        }
+
+        if (password) {
+            user.password = password;
+        }
+
+        await user.save();
+        res.send('User updated successfully.');
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).send('Internal server error.');
+    }
 };
