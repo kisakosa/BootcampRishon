@@ -8,5 +8,6 @@ router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 
 // update name, password and email
+router.put('/update', authController.update);
 
 module.exports = router;

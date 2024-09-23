@@ -84,7 +84,7 @@ exports.logout = (req, res) => {
 };
 
 // Update name or password
-exports.updateUser = async (req, res) => {
+exports.update = async (req, res) => {
     try {
         const { name, password, email } = req.body;
 
