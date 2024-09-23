@@ -1,5 +1,6 @@
 const express = require('express');
 const authController = require('../../../controllers/api/v1/auth'); // Import the auth controller
+const auth = require('../../../middleware/auth'); // Import the auth middleware
 const router = express.Router();
 
 // Auth routes
@@ -8,6 +9,6 @@ router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 
 // update name, password and email
-router.put('/update', authController.update);
+router.put('/update', auth, authController.update);
 
 module.exports = router;
