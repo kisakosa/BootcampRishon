@@ -11,3 +11,5 @@ router.post('/', auth, savedRoutesController.addSavedRoute);
 
 // Remove a saved route for a user
 router.delete('/', auth, savedRoutesController.removeSavedRoute);
+
+module.exports = router;

@@ -3,6 +3,7 @@ require('dotenv').config();
 
 // Import required modules
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const session = require('express-session'); // Import express-session
 const MongoStore = require('connect-mongo'); // Import connect-mongo
 const mongoose = require('mongoose');
@@ -15,6 +16,8 @@ app.set('view engine', 'ejs');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+// Middleware to parse cookies
+app.use(cookieParser());
 // Middleware to parse URL-encoded bodies
 app.use(express.urlencoded({ extended: false }));
 // Middleware to serve static files from the 'public' directory
@@ -52,6 +55,7 @@ app.use('/api/v1/tags', require('./routes/api/v1/tag'));
 app.use('/api/v1/places', require('./routes/api/v1/place'));
 app.use('/api/v1/coordinates', require('./routes/api/v1/coordinates'));
 app.use('/api/v1/categories', require('./routes/api/v1/category'));
+app.use('/api/v1/savedRoutes', require('./routes/api/v1/savedRoutes'));
 
 // Start the server and listen on port specified in the environment variable (.env file)
 app.listen(process.env.PORT, () => {
