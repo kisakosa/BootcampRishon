@@ -24,8 +24,11 @@ exports.register = async (req, res) => {
         await user.save();
 
         const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        const httpOnly = process.env.HTTP_ONLY === 'true';
+
         res.cookie('authToken', token, { 
-            httpOnly: true,
+            httpOnly: httpOnly,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
             maxAge: 3600000 // 1 hour
@@ -63,8 +66,11 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        const httpOnly = process.env.HTTP_ONLY === 'true';
+
         res.cookie('authToken', token, { 
-            httpOnly: true,
+            httpOnly: httpOnly,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
             maxAge: 3600000 // 1 hour
@@ -81,6 +87,11 @@ exports.login = async (req, res) => {
 // Logout a user
 exports.logout = (req, res) => {
     res.clearCookie('authToken').send('Logged out successfully.');
+};
+
+// Get user profile
+exports.profile = (req, res) => {
+    res.send(req.user);
 };
 
 // Update name or password

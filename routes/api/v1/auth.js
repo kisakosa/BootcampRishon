@@ -8,6 +8,9 @@ router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 
+// Get user profile
+router.get('/profile', auth, authController.profile);
+
 // update name, password and email
 router.put('/update', auth, authController.update);
 
