@@ -20,6 +20,23 @@ exports.getAllPlaces = async (req, res) => {
     }
 }
 
+exports.getPlaceByQuery = async (req, res) => {
+    try {
+        // Fetch all Places from the database
+        const Places = await Place.find(req.query)
+            .sort({ _id: -1 })
+            .limit(1000)
+            .populate('tags')
+            .populate('coordinates');
+
+        res.json(Places);
+    } catch (error) {
+        // If an error occurs, respond with an error status and message
+        console.error('Error fetching Places:', error);
+        res.status(500).json({ error: 'An error occurred while fetching the Places' });
+    }
+}
+
 // Controller function to create a new Place
 exports.createPlace = async (req, res) => {
     try {

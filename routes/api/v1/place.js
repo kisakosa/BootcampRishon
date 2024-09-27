@@ -7,6 +7,9 @@ const router = express.Router();
 // Route to get all Places
 router.get('/', placeController.getAllPlaces);
 
+// Route to get a Place by query
+router.get('/search', placeController.getPlaceByQuery);
+
 // Route to get a Place by ID
 router.get('/:id', placeController.getPlaceById);
 
