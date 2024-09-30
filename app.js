@@ -33,8 +33,8 @@ app.use(session({
     }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 1 day
-        secure: false, // Set to true if using HTTPS
-        httpOnly: true // Prevents client-side JavaScript from accessing the cookie
+        secure: process.env.HTTP_ONLY === "true", // Set to true if using HTTPS
+        httpOnly: process.env.HTTP_ONLY === "true" // Prevents client-side JavaScript from accessing the cookie
     }
 }));
 
@@ -56,6 +56,12 @@ app.use('/api/v1/places', require('./routes/api/v1/place'));
 app.use('/api/v1/coordinates', require('./routes/api/v1/coordinates'));
 app.use('/api/v1/categories', require('./routes/api/v1/category'));
 app.use('/api/v1/savedRoutes', require('./routes/api/v1/savedRoutes'));
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+    console.error("error");
+    res.status(500).json({ error: 'An internal server error occurred' });
+});
 
 // Start the server and listen on port specified in the environment variable (.env file)
 app.listen(process.env.PORT, () => {
