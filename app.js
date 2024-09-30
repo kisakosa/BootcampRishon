@@ -59,7 +59,7 @@ app.use('/api/v1/savedRoutes', require('./routes/api/v1/savedRoutes'));
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
-    console.error("error");
+    console.error(err.stack);
     res.status(500).json({ error: 'An internal server error occurred' });
 });
 
