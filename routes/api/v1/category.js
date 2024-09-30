@@ -23,4 +23,22 @@ router.delete('/:id', auth, checkRole('admin'), validateObjectId, categoryContro
 // Get all Tags for a Category
 router.get('/:id/tags', validateObjectId, categoryController.getTagsForCategory);
 
+// Handles any category errors
+router.use((err, req, res, next) => {
+    if (req.method === 'GET' && req.path === '/') {
+        console.error("Error fetching categories");
+    } else if (req.method === 'POST' && req.path === '/') {
+        console.error("Error creating a category");
+    } else if (req.method === 'GET' && req.path.startsWith('/:id')) {
+        console.error("Error fetching a category");
+    } else if (req.method === 'PUT' && req.path.startsWith('/:id')) {
+        console.error("Error updating a category");
+    } else if (req.method === 'DELETE' && req.path.startsWith('/:id')) {
+        console.error("Error deleting a category");
+    } else {
+        console.error("Category error: ", err.message);
+    }
+    res.status(500).json({ error: 'An internal server error occurred' });
+});
+
 module.exports = router;

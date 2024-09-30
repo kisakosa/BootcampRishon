@@ -9,9 +9,9 @@ router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 
 // Get user profile
-router.get('/profile', auth, authController.profile);
+router.get('/', auth, authController.profile);
 
 // update name, password and email
-router.put('/update', auth, authController.update);
+router.put('/', auth, authController.update);
 
 module.exports = router;
