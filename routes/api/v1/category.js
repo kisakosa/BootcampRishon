@@ -3,25 +3,26 @@ const categoryController = require('../../../controllers/api/v1/category'); // I
 const auth = require('../../../middleware/auth'); // Import the auth middleware
 const checkRole = require('../../../middleware/role'); // Import the role middleware
 const validateObjectId = require('../../../middleware/validateObjectId'); // Import the validateObjectId middleware
+const SecurityMiddleware = require('../../../middleware/securityMiddleware'); // Import the security middleware
 const router = express.Router();
 
 // Get all categories
 router.get('/', categoryController.getAllCategories);
 
 // Get a single category by ID
-router.get('/:id', validateObjectId, categoryController.getCategoryById);
+router.get('/:id', SecurityMiddleware.secure(), validateObjectId, categoryController.getCategoryById);
 
 // Create a new category
-router.post('/', auth, checkRole('admin'), categoryController.createCategory);
+router.post('/', SecurityMiddleware.secure(), auth, checkRole('admin'), categoryController.createCategory);
 
 // Update a category by ID
-router.put('/:id', auth, checkRole('admin'), validateObjectId, categoryController.updateCategory);
+router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, categoryController.updateCategory);
 
 // Delete a category by ID
-router.delete('/:id', auth, checkRole('admin'), validateObjectId, categoryController.deleteCategory);
+router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, categoryController.deleteCategory);
 
 // Get all Tags for a Category
-router.get('/:id/tags', validateObjectId, categoryController.getTagsForCategory);
+router.get('/:id/tags', SecurityMiddleware.secure(), validateObjectId, categoryController.getTagsForCategory);
 
 // Handles any category errors
 router.use((err, req, res, next) => {

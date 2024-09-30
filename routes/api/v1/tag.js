@@ -3,22 +3,23 @@ const tagController = require('../../../controllers/api/v1/tag'); // Import the 
 const auth = require('../../../middleware/auth'); // Import the auth middleware
 const checkRole = require('../../../middleware/role'); // Import the role middleware
 const validateObjectId = require('../../../middleware/validateObjectId'); // Import the validateObjectId middleware
+const SecurityMiddleware = require('../../../middleware/securityMiddleware'); // Import the security middleware
 const router = express.Router();
 
 // Get all tags
 router.get('/', tagController.getAllTags);
 
 // Get a single tag by ID
-router.get('/:id', validateObjectId, tagController.getTagById);
+router.get('/:id', SecurityMiddleware.secure(), validateObjectId, tagController.getTagById);
 
 // Create a new tag
-router.post('/', auth, checkRole('admin'), tagController.createTag);
+router.post('/', SecurityMiddleware.secure(), auth, checkRole('admin'), tagController.createTag);
 
 // Update a tag by ID
-router.put('/:id', auth, checkRole('admin'), validateObjectId, tagController.updateTag);
+router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, tagController.updateTag);
 
 // Delete a tag by ID
-router.delete('/:id', auth, checkRole('admin'), validateObjectId, tagController.deleteTag);
+router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, tagController.deleteTag);
 
 
 // Handles any tag errors

@@ -3,22 +3,23 @@ const userController = require('../../../controllers/api/v1/user'); // Import th
 const auth = require('../../../middleware/auth'); // Import the auth middleware
 const checkRole = require('../../../middleware/role'); // Import the role middleware
 const validateObjectId = require('../../../middleware/validateObjectId'); // Import the validateObjectId middleware
+const SecurityMiddleware = require('../../../middleware/securityMiddleware'); // Import the security middleware
 const router = express.Router();
 
 // Route to get all users
 router.get('/', auth, checkRole('admin'), userController.getAllUsers);
 
 // Route to get a user by ID
-router.get('/:id', auth, checkRole('admin'), validateObjectId, userController.getUserById);
+router.get('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, userController.getUserById);
 
 // Route to create a new user
-router.post('/', auth, checkRole('admin'), userController.createUser);
+router.post('/', SecurityMiddleware.secure(), auth, checkRole('admin'), userController.createUser);
 
 // Route to update a user by ID
-router.put('/:id', auth, checkRole('admin'), validateObjectId, userController.updateUser);
+router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, userController.updateUser);
 
 // Route to delete a user by ID
-router.delete('/:id', auth, checkRole('admin'), validateObjectId, userController.deleteUser);
+router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, userController.deleteUser);
 
 // Handles any user errors
 router.use((err, req, res, next) => {

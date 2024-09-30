@@ -2,16 +2,17 @@ const express = require('express');
 const savedRoutesController = require('../../../controllers/api/v1/savedRoutes'); // Import the controller
 const auth = require('../../../middleware/auth'); // Import the auth middleware
 const validateObjectId = require('../../../middleware/validateObjectId'); // Import the validateObjectId middleware
+const SecurityMiddleware = require('../../../middleware/securityMiddleware'); // Import the security middleware
 const router = express.Router();
 
 // Get saved routes for a user
 router.get('/', auth, savedRoutesController.getSavedRoutes);
 
 // Add a saved route for a user
-router.post('/', auth, savedRoutesController.addSavedRoute);
+router.post('/', SecurityMiddleware.secure(), SecurityMiddleware.secure(), auth, savedRoutesController.addSavedRoute);
 
-// Remove a saved route for a user
-router.delete('/', auth, savedRoutesController.removeSavedRoute);
+// Remove a saved route by ID for a user
+router.delete('/:routeId', SecurityMiddleware.secure(), auth, savedRoutesController.removeSavedRoute);
 
 // Handles any saved route errors
 router.use((err, req, res, next) => {

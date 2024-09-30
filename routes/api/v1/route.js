@@ -3,25 +3,26 @@ const routeController = require('../../../controllers/api/v1/route'); // Import 
 const auth = require('../../../middleware/auth'); // Import the auth middleware
 const checkRole = require('../../../middleware/role'); // Import the role middleware
 const validateObjectId = require('../../../middleware/validateObjectId');
+const SecurityMiddleware = require('../../../middleware/securityMiddleware'); // Import the security middleware
 const router = express.Router();
 
 // Route to get all Routes
 router.get('/', routeController.getAllRoutes);
 
 // Route to get a query of Routes
-router.get('/search', routeController.getRouteByQuery);
+router.get('/search', SecurityMiddleware.secure(), routeController.getRouteByQuery);
 
 // Route to get a Route by ID
-router.get('/:id', validateObjectId, routeController.getRouteById);
+router.get('/:id', SecurityMiddleware.secure(), validateObjectId, routeController.getRouteById);
 
 // Route to create a new Route
-router.post('/', auth, checkRole('admin'), routeController.createRoute);
+router.post('/', SecurityMiddleware.secure(), auth, checkRole('admin'), routeController.createRoute);
 
 // Route to update a Route by ID
-router.put('/:id', auth, checkRole('admin'), validateObjectId, routeController.updateRoute);
+router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, routeController.updateRoute);
 
 // Route to delete a Route by ID
-router.delete('/:id', auth, checkRole('admin'), validateObjectId, routeController.deleteRoute);
+router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, routeController.deleteRoute);
 
 // Handles any Route errors
 router.use((err, req, res, next) => {
