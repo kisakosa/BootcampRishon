@@ -57,6 +57,10 @@ app.use('/api/v1/coordinates', require('./routes/api/v1/coordinates'));
 app.use('/api/v1/categories', require('./routes/api/v1/category'));
 app.use('/api/v1/savedRoutes', require('./routes/api/v1/savedRoutes'));
 
+app.use((req, res, next) => {
+    res.status(404).json({ error: 'Not Found' });
+});
+
 // Global error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
