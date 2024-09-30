@@ -1,17 +1,18 @@
 const Tag = require('../../../models/Tag'); // Import the Tag model
+const asyncHandler = require('../../../utils/asyncHandler.js'); // Adjust the path as needed
 
 // Controller function to get all Tags
-exports.getAllTags = async (req, res) => {
+exports.getAllTags = asyncHandler(async (req, res) => {
     // Fetch all Tags from the database
     const tags = await Tag.find()
         .populate('category')
         .sort({ _id: -1 });
 
     res.json(tags);
-}
+});
 
 // Controller function to create a new Tag
-exports.createTag = async (req, res) => {
+exports.createTag = asyncHandler(async (req, res) => {
     // Create a new Tag instance
     const tag = new Tag(req.body);
 
@@ -21,19 +22,19 @@ exports.createTag = async (req, res) => {
     await tag.populate('category');
 
     res.json(tag);
-}
+});
 
 // Controller function to get a Tag by ID
-exports.getTagById = async (req, res) => {
+exports.getTagById = asyncHandler(async (req, res) => {
     // Fetch the Tag by ID from the database
     const tag = await Tag.findById(req.params.id)
         .populate('category');
 
     res.json(tag);
-}
+});
 
 // Controller function to update a Tag by ID
-exports.updateTag = async (req, res) => {
+exports.updateTag = asyncHandler(async (req, res) => {
     // Update the Tag by ID with the new data from the request body
     const updatedTag = await Tag.findByIdAndUpdate(
         req.params.id,
@@ -42,10 +43,10 @@ exports.updateTag = async (req, res) => {
     ).populate('category');
 
     res.json(updatedTag);
-}
+});
 
 // Controller function to delete a Tag by ID
-exports.deleteTag = async (req, res) => {
+exports.deleteTag = asyncHandler(async (req, res) => {
     await Tag.findByIdAndDelete(req.params.id);
     res.json({ message: 'Tag deleted successfully' });
-}
+});
