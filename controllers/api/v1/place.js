@@ -1,5 +1,4 @@
 const Place = require('../../../models/Place'); // Import the Place model
-const Tag = require('../../../models/Tag'); // Import the Tag model
 const asyncHandler = require('../../../utils/asyncHandler'); // Adjust the path as needed
 
 // Controller function to get all Places
@@ -21,19 +20,39 @@ exports.getAllPlaces = asyncHandler(async (req, res) => {
 
 // Controller function to get Places by query
 exports.getPlaceByQuery = asyncHandler(async (req, res) => {
-    // Fetch all Places from the database based on query
-    const places = await Place.find(req.query)
+    const { name, tags, isRelevant } = req.query;
+
+    // Build the query object
+    let query = {};
+
+    // Regex Search for Name
+    if (name) {
+        query.name = { $regex: name, $options: 'i' }; // Case-insensitive search
+    }
+
+    // Tag Array Matching
+    if (tags) {
+        query.tags = { $all: tags.split(',') }; // Assuming tags are provided as a comma-separated string
+    }
+
+    // Boolean Filter for isRelevant
+    if (isRelevant !== undefined) {
+        query.isRelevant = isRelevant === 'true'; // Convert string to boolean
+    }
+
+    // Fetch all Routes from the database that match the query
+    const routes = await Place.find(query)
         .sort({ _id: -1 })
-        .limit(1000)
         .populate({
             path: 'tags',
             populate: {
                 path: 'category',
                 model: 'Category'
             }
-        });
+        })
+        .populate('coordinates');
 
-    res.json(places);
+    res.json(routes);
 });
 
 // Controller function to create a new Place

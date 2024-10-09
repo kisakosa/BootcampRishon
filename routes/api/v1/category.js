@@ -13,16 +13,16 @@ router.get('/', categoryController.getAllCategories);
 router.get('/search', SecurityMiddleware.secure(), categoryController.searchCategories);
 
 // Get a single category by ID
-router.get('/:id', SecurityMiddleware.secure(), validateObjectId, categoryController.getCategoryById);
+router.get('/:id', SecurityMiddleware.secure(), validateObjectId('id'), categoryController.getCategoryById);
 
 // Create a new category
 router.post('/', SecurityMiddleware.secure(), auth, checkRole('admin'), categoryController.createCategory);
 
 // Update a category by ID
-router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, categoryController.updateCategory);
+router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), categoryController.updateCategory);
 
 // Delete a category by ID
-router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, categoryController.deleteCategory);
+router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), categoryController.deleteCategory);
 
 // Handles any category errors
 router.use((err, req, res, next) => {

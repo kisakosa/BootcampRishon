@@ -13,16 +13,16 @@ router.get('/', routeController.getAllRoutes);
 router.get('/search', SecurityMiddleware.secure(), routeController.getRouteByQuery);
 
 // Route to get a Route by ID
-router.get('/:id', SecurityMiddleware.secure(), validateObjectId, routeController.getRouteById);
+router.get('/:id', SecurityMiddleware.secure(), validateObjectId('id'), routeController.getRouteById);
 
 // Route to create a new Route
 router.post('/', SecurityMiddleware.secure(), auth, checkRole('admin'), routeController.createRoute);
 
 // Route to update a Route by ID
-router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, routeController.updateRoute);
+router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), routeController.updateRoute);
 
 // Route to delete a Route by ID
-router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, routeController.deleteRoute);
+router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), routeController.deleteRoute);
 
 // Handles any Route errors
 router.use((err, req, res, next) => {

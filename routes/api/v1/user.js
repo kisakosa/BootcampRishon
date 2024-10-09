@@ -10,16 +10,16 @@ const router = express.Router();
 router.get('/', auth, checkRole('admin'), userController.getAllUsers);
 
 // Route to get a user by ID
-router.get('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, userController.getUserById);
+router.get('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), userController.getUserById);
 
 // Route to create a new user
 router.post('/', SecurityMiddleware.secure(), auth, checkRole('admin'), userController.createUser);
 
 // Route to update a user by ID
-router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, userController.updateUser);
+router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), userController.updateUser);
 
 // Route to delete a user by ID
-router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, userController.deleteUser);
+router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), userController.deleteUser);
 
 // Handles any user errors
 router.use((err, req, res, next) => {
