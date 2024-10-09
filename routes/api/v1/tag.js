@@ -9,6 +9,9 @@ const router = express.Router();
 // Get all tags
 router.get('/', tagController.getAllTags);
 
+// Search for tags
+router.get('/search', SecurityMiddleware.secure(), tagController.searchTags);
+
 // Get a single tag by ID
 router.get('/:id', SecurityMiddleware.secure(), validateObjectId, tagController.getTagById);
 

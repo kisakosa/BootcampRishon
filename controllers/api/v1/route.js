@@ -27,8 +27,51 @@ exports.getAllRoutes = asyncHandler(async (req, res) => {
 
 // Controller function to get a query of Routes
 exports.getRouteByQuery = asyncHandler(async (req, res) => {
-    // Fetch the query from the request body
-    const query = req.body;
+    const { distanceRange, durationRange, name, tags, isRelevant, places } = req.query;
+
+    // Build the query object
+    let query = {};
+
+    // Min-Max Range Filters
+    if (distanceRange) {
+        const minDistance = distanceRange.min;
+        const maxDistance = distanceRange.max;
+        if (minDistance || maxDistance) {
+            query.distance = {};
+            if (minDistance) query.distance.$gte = Number(minDistance);
+            if (maxDistance) query.distance.$lte = Number(maxDistance);
+        }
+    }
+
+    if (durationRange) {
+        const minDuration = durationRange.min;
+        const maxDuration = durationRange.max;
+        if (minDuration || maxDuration) {
+            query.duration = {};
+            if (minDuration) query.duration.$gte = Number(minDuration);
+            if (maxDuration) query.duration.$lte = Number(maxDuration);
+        }
+    }
+
+    // Regex Search for Name
+    if (name) {
+        query.name = { $regex: name, $options: 'i' }; // Case-insensitive search
+    }
+
+    // Tag Array Matching
+    if (tags) {
+        query.tags = { $all: tags.split(',') }; // Assuming tags are provided as a comma-separated string
+    }
+
+    // Boolean Filter for isRelevant
+    if (isRelevant !== undefined) {
+        query.isRelevant = isRelevant === 'true'; // Convert string to boolean
+    }
+
+    // Places Array Matching
+    if (places) {
+        query.places = { $all: places.split(',') }; // Assuming places are provided as a comma-separated string
+    }
 
     // Fetch all Routes from the database that match the query
     const routes = await Route.find(query)
