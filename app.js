@@ -48,6 +48,7 @@ console.log(process.env.MONGOURL);
 
 // Import and use routes
 app.use('/', require('./routes/index'));
+app.use('/templates', require('./routes/templates'));
 app.use('/api/v1/routes', require('./routes/api/v1/route'));
 app.use('/api/v1/auth', require('./routes/api/v1/auth'));
 app.use('/api/v1/users', require('./routes/api/v1/user'));

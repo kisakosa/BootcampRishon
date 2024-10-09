@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../partials/head') %>
+    <body data-spy="scroll" data-target=".fixed-top">
+        <!-- Navigation -->
+        <%- include('../partials/navbar', {currentPage: 'template home'}) %>
+        <!-- end of navigation -->
+        
+        <div class="container-fluid d-flex flex-column justify-content-center align-items-center vh-100">
+            <h1 class="text-center">This is a template page: <%= title %></h1>
+        </div>
+    </body>
+</html>
