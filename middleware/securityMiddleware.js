@@ -10,20 +10,25 @@ class SecurityMiddleware {
     }
 
     static checkInjections(req, next) {
+        // Check for injection attacks in req.params
         for (let param in req.params) {
-            if (req.params[param].indexOf('..') > -1 || req.params[param].indexOf('/') > -1 || req.params[param].indexOf('\\') > -1) {
-                throw new Error('Invalid Request')
+            if (req.params[param].includes('..')) {
+                throw new Error('Invalid Request');
             }
         }
+
+        // Check for injection attacks in req.query
         for (let query in req.query) {
-            if (req.query[query].indexOf('..') > -1 || req.query[query].indexOf('/') > -1 || req.query[query].indexOf('\\') > -1) {
-                throw new Error('Invalid Request')
+            if (req.query[query].includes('..')) {
+                throw new Error('Invalid Request');
             }
         }
+
+        // Check for injection attacks in req.body (if applicable)
         if (req.body) {
-            for (let body in req.body) {
-                if (req.body[body].indexOf('..') > -1 || req.body[body].indexOf('/') > -1 || req.body[body].indexOf('\\') > -1) {
-                    throw new Error('Invalid Request')
+            for (let bodyParam in req.body) {
+                if (typeof req.body[bodyParam] === 'string' && req.body[bodyParam].includes('..')) {
+                    throw new Error('Invalid Request');
                 }
             }
         }

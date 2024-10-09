@@ -1,6 +1,5 @@
 const Place = require('../../../models/Place'); // Import the Place model
 const Tag = require('../../../models/Tag'); // Import the Tag model
-const Coordinates = require('../../../models/Coordinates'); // Import the Coordinates model
 const asyncHandler = require('../../../utils/asyncHandler'); // Adjust the path as needed
 
 // Controller function to get all Places
@@ -9,8 +8,13 @@ exports.getAllPlaces = asyncHandler(async (req, res) => {
     const places = await Place.find()
         .sort({ _id: -1 })
         .limit(1000)
-        .populate('tags')
-        .populate('coordinates');
+        .populate({
+            path: 'tags',
+            populate: {
+                path: 'category',
+                model: 'Category'
+            }
+        });
 
     res.json(places);
 });
@@ -21,8 +25,13 @@ exports.getPlaceByQuery = asyncHandler(async (req, res) => {
     const places = await Place.find(req.query)
         .sort({ _id: -1 })
         .limit(1000)
-        .populate('tags')
-        .populate('coordinates');
+        .populate({
+            path: 'tags',
+            populate: {
+                path: 'category',
+                model: 'Category'
+            }
+        });
 
     res.json(places);
 });
@@ -42,8 +51,13 @@ exports.createPlace = asyncHandler(async (req, res) => {
 exports.getPlaceById = asyncHandler(async (req, res) => {
     // Fetch the Place by ID from the database
     const place = await Place.findById(req.params.id)
-        .populate('tags')
-        .populate('coordinates');
+        .populate({
+            path: 'tags',
+            populate: {
+                path: 'category',
+                model: 'Category'
+            }
+        });
 
     res.json(place);
 });

@@ -1,7 +1,6 @@
 const Route = require('../../../models/Route'); // Import the Route model
 const Tag = require('../../../models/Tag'); // Import the Tag model
 const Place = require('../../../models/Place'); // Import the Place model
-const Coordinates = require('../../../models/Coordinates'); // Import the Coordinates model
 const asyncHandler = require('../../../utils/asyncHandler'); // Adjust the path as needed
 
 // Controller function to get all Routes
@@ -9,13 +8,16 @@ exports.getAllRoutes = asyncHandler(async (req, res) => {
     // Fetch all Routes from the database
     const routes = await Route.find()
         .sort({ _id: -1 })
-        .limit(1000)
-        .populate('tags')
         .populate({
             path: 'places',
             populate: [
-                { path: 'tags' },
-                { path: 'coordinates' }
+                {
+                    path: 'tags',
+                    populate: {
+                        path: 'category',
+                        model: 'Category'
+                    }
+                }
             ]
         });
 
@@ -30,13 +32,16 @@ exports.getRouteByQuery = asyncHandler(async (req, res) => {
     // Fetch all Routes from the database that match the query
     const routes = await Route.find(query)
         .sort({ _id: -1 })
-        .limit(1000)
-        .populate('tags')
         .populate({
             path: 'places',
             populate: [
-                { path: 'tags' },
-                { path: 'coordinates' }
+                {
+                    path: 'tags',
+                    populate: {
+                        path: 'category',
+                        model: 'Category'
+                    }
+                }
             ]
         });
 
@@ -58,12 +63,16 @@ exports.createRoute = asyncHandler(async (req, res) => {
 exports.getRouteById = asyncHandler(async (req, res) => {
     // Fetch the Route by ID from the database
     const route = await Route.findById(req.params.id)
-        .populate('tags')
         .populate({
             path: 'places',
             populate: [
-                { path: 'tags' },
-                { path: 'coordinates' }
+                {
+                    path: 'tags',
+                    populate: {
+                        path: 'category',
+                        model: 'Category'
+                    }
+                }
             ]
         });
 

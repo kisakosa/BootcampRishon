@@ -12,9 +12,14 @@ const placeSchema = new mongoose.Schema({
         type: String
     },
     coordinates: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Coordinates'
+        longitude: {
+            type: Number,
+            required: true
+        },
+        latitude: {
+            type: Number,
+            required: true
+        }
     },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,

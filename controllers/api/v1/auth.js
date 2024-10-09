@@ -88,12 +88,8 @@ exports.profile = (req, res) => {
 
 // Update name or password
 exports.update = asyncHandler(async (req, res) => {
-    const { name, password, email } = req.body;
-
-    if (!name && !password && !email) {
-        return res.status(400).send('Name or password or email is required.');
-    }
-
+    const { name, email, password } = req.body;
+    
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (email) {
         if (!emailPattern.test(email)) {
