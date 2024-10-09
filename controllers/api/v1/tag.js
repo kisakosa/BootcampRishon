@@ -50,3 +50,10 @@ exports.deleteTag = asyncHandler(async (req, res) => {
     await Tag.findByIdAndDelete(req.params.id);
     res.json({ message: 'Tag deleted successfully' });
 });
+
+// Controller function to get all Tags for a Category
+exports.getTagsForCategory = asyncHandler(async (req, res) => {
+    // Fetch all Tags for the Category by ID from the database
+    const tags = await Tag.find({ category: req.params.id });
+    res.json(tags);
+});

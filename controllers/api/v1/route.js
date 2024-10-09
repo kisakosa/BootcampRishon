@@ -8,6 +8,7 @@ exports.getAllRoutes = asyncHandler(async (req, res) => {
     // Fetch all Routes from the database
     const routes = await Route.find()
         .sort({ _id: -1 })
+        .populate('tags')
         .populate({
             path: 'places',
             populate: [
@@ -32,6 +33,7 @@ exports.getRouteByQuery = asyncHandler(async (req, res) => {
     // Fetch all Routes from the database that match the query
     const routes = await Route.find(query)
         .sort({ _id: -1 })
+        .populate('tags')
         .populate({
             path: 'places',
             populate: [
@@ -63,6 +65,7 @@ exports.createRoute = asyncHandler(async (req, res) => {
 exports.getRouteById = asyncHandler(async (req, res) => {
     // Fetch the Route by ID from the database
     const route = await Route.findById(req.params.id)
+        .populate('tags')
         .populate({
             path: 'places',
             populate: [

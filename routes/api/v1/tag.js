@@ -21,6 +21,8 @@ router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), valida
 // Delete a tag by ID
 router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, tagController.deleteTag);
 
+// Get all tags for category by ID
+router.get('/category/:id', SecurityMiddleware.secure(), validateObjectId, tagController.getTagsForCategory);
 
 // Handles any tag errors
 router.use((err, req, res, next) => {

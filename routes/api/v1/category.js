@@ -9,6 +9,9 @@ const router = express.Router();
 // Get all categories
 router.get('/', categoryController.getAllCategories);
 
+// Search for categories
+router.get('/search', SecurityMiddleware.secure(), categoryController.searchCategories);
+
 // Get a single category by ID
 router.get('/:id', SecurityMiddleware.secure(), validateObjectId, categoryController.getCategoryById);
 
@@ -20,9 +23,6 @@ router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), valida
 
 // Delete a category by ID
 router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, categoryController.deleteCategory);
-
-// Get all Tags for a Category
-router.get('/:id/tags', SecurityMiddleware.secure(), validateObjectId, categoryController.getTagsForCategory);
 
 // Handles any category errors
 router.use((err, req, res, next) => {
