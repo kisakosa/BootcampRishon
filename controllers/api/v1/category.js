@@ -11,10 +11,13 @@ exports.getAllCategories = asyncHandler(async (req, res) => {
 // Controller function to search for Categories
 exports.searchCategories = asyncHandler(async (req, res) => {
     // Fetch all Categories from the database that match the search query
-    const { name } = req.query;
+    const { name, type } = req.query;
     let query = {};
     if (name) {
         query.name = { $regex: name, $options: 'i' };
+    }
+    if (type) {
+        query.for = type;
     }
     const categories = await Category.find(query).sort({ _id: -1 });
     res.json(categories);

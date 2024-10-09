@@ -130,7 +130,7 @@
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary" style="margin-right: 1rem;">Search</button>
-                    <button type="reset" class="btn btn-secondary" onclick="document.getElementById('searchForm').reset(); $('#routeTags').empty();">Reset</button>
+                    <button type="reset" class="btn btn-secondary" onclick="resetFormAndReloadTable()">Reset</button>
                 </form>
                 <div style="display: block; overflow-x: auto;">
                     <table class="table">
@@ -153,17 +153,18 @@
             </div>
         </div>
         <script>
-            $(document).ready(function() {
-                // Make the AJAX request
+            let routesData = [];
+            async function fetchRoutes() {
+                const response = await fetch('/api/v1/routes');
+                const routes = await response.json();
+                routesData = routes;
+                fillRoutesTable(routes);
+            }
+
+            $(document).ready(async function() {
+                await fetchRoutes();
                 $.ajax({
-                    url: `/api/v1/routes`,
-                    method: 'GET',
-                    success: function(routes) {
-                        fillRoutesTable(routes);
-                    }
-                });
-                $.ajax({
-                    url: '/api/v1/categories/search?for=Route',
+                    url: '/api/v1/categories/search?type=Route',
                     method: 'GET',
                     success: function(categories) {
                         const categorySelect = $('#routeCategories');
@@ -257,8 +258,8 @@
                         }
                     });
                 });
-
-                function fillRoutesTable(routes) {
+            });
+            function fillRoutesTable(routes) {
                     const tbody = $('#routesTable table tbody');
                     tbody.empty(); // Clear previous results
 
@@ -283,8 +284,14 @@
                         </tr>`;
                         tbody.append(row);
                     });
-                }
-            });
+            }
+
+            // Function to reset the form and reload the table with the stored routes
+            function resetFormAndReloadTable() {
+                document.getElementById('searchForm').reset(); // Reset the form
+                $('#routeTags').empty(); // Clear the tags
+                fillRoutesTable(routesData); // Reload the table with the stored routes
+            }
         </script>
     </body>
 </html>
