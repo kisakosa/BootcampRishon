@@ -9,6 +9,9 @@ const router = express.Router();
 // Route to get all users
 router.get('/', auth, checkRole('admin'), userController.getAllUsers);
 
+// Route to search for users
+router.get('/search', SecurityMiddleware.secure(), auth, checkRole('admin'), userController.searchUsers);
+
 // Route to get a user by ID
 router.get('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), userController.getUserById);
 
