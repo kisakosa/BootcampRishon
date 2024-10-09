@@ -8,6 +8,40 @@
         
         <div class="container-fluid d-flex flex-column justify-content-center align-items-center vh-100">
             <h1 class="text-center">This is a template page: <%= title %></h1>
+            <div style="max-height: 40rem; overflow-y: auto;">
+                <table id="tagsTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">name</th>
+                            <th scope="col">category</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                fetch('/api/v1/tags/')
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBody = document.querySelector('#tagsTable tbody');
+                        data.forEach(tag => {
+                            const row = document.createElement('tr');
+                            const nameCell = document.createElement('td');
+                            const categoryCell = document.createElement('td');
+
+                            nameCell.textContent = tag.name;
+                            categoryCell.textContent = tag.category.name;
+
+                            row.appendChild(nameCell);
+                            row.appendChild(categoryCell);
+                            tableBody.appendChild(row);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching tags:', error));
+            });
+        </script>
     </body>
 </html>
