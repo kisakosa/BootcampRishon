@@ -105,6 +105,7 @@ exports.getRouteByQuery = asyncHandler(async (req, res) => {
 
 // Controller function to create a new Route
 exports.createRoute = asyncHandler(async (req, res) => {
+    console.log(req.body);
     // Create a new Route instance
     const route = new Route(req.body);
 

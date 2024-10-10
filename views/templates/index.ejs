@@ -132,6 +132,7 @@
                     <button type="submit" class="btn btn-primary" style="margin-right: 1rem;">Search</button>
                     <button type="reset" class="btn btn-secondary" onclick="resetFormAndReloadTable()">Reset</button>
                 </form>
+                <button class="btn btn-primary" onclick="addRoute()">Add Route</button>
                 <div style="display: block; overflow-x: auto;">
                     <table class="table">
                         <thead>
@@ -143,6 +144,7 @@
                                 <th scope="col">Duration</th>
                                 <th scope="col" style="min-width: 200px;">Tags</th>
                                 <th scope="col">isRelevant</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -281,6 +283,10 @@
                             <td>${route.duration}</td>
                             <td><ul>${tagsList}</ul></td>
                             <td>${route.isRelevant}</td>
+                            <td>
+                                <button class="btn btn-primary" onclick="deleteRoute('${route._id}')">Delete</button>
+                                <button class="btn btn-primary" onclick="updateRoute('${route._id}')">Update</button>
+                            </td>
                         </tr>`;
                         tbody.append(row);
                     });
@@ -291,6 +297,61 @@
                 document.getElementById('searchForm').reset(); // Reset the form
                 $('#routeTags').empty(); // Clear the tags
                 fillRoutesTable(routesData); // Reload the table with the stored routes
+            }
+
+            // Function to delete a route
+            function deleteRoute(routeId) {
+                $.ajax({
+                    url: `/api/v1/routes/${routeId}`,
+                    method: 'DELETE',
+                    success: function() {
+                        fetchRoutes();
+                    }
+                });
+            }
+
+            // Function to add a new route
+            function addRoute() {
+                const newRoute = {
+                    name: 'New Route',
+                    description: 'New Route Description',
+                    distance: 0,
+                    duration: 0,
+                    tags: [],
+                    isRelevant: false
+                };
+
+                $.ajax({
+                    url: '/api/v1/routes',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(newRoute),
+                    success: function() {
+                        fetchRoutes();
+                    }
+                });
+            }
+
+            // Function to update a route
+            function updateRoute(routeId) {
+                const updatedRoute = {
+                    name: 'Updated Route',
+                    description: 'Updated Route Description',
+                    distance: 0,
+                    duration: 0,
+                    tags: [],
+                    isRelevant: false
+                };
+
+                $.ajax({
+                    url: `/api/v1/routes/${routeId}`,
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(updatedRoute),
+                    success: function() {
+                        fetchRoutes();
+                    }
+                });
             }
         </script>
     </body>

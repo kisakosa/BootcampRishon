@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 async function auth(req, res, next) {
+    // Skip authentication if in development mode
+    if (process.env.NODE_ENV === 'development') return next();
+
     const token = req.cookies.authToken;
     if (!token) return res.status(401).send('Access denied. No token provided.');
 
