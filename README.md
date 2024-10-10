@@ -94,10 +94,9 @@ A module in Node.js is a reusable block of code whose existence does not impact 
 
 1. Clone the repository.
 2. Install the dependencies using `npm install`.
-3. Set up the environment variables in the `.env` file.
-4. Connect to MongoDB by ensuring your MongoDB server is running and the connection string in the `.env` file is correct.
-5. Start the server using `node app.js`.
-6. Open your browser and navigate to `http://localhost:8080` to view the application.
+3. [Set up the environment variables in the `.env` file.](#env-configuration)
+4. Start the server using `node app.js`.
+5. Open your browser and navigate to `http://localhost:8080` to view the application.
 
 ## Conclusion
 
