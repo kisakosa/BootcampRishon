@@ -57,6 +57,7 @@ exports.addSavedRoute = asyncHandler(async (req, res) => {
         return res.status(400).send('Route already saved.');
     }
     user.savedRoutes.push(routeId);
+    await user.save();
     await user.populate({
         path: 'savedRoutes',
         populate: [
