@@ -49,17 +49,17 @@ The `.env` file is used to store environment variables that configure the applic
 
 ### Environment Variables
 
-- **NODE_ENV**
+**NODE_ENV**
 - `NODE_ENV=development`: For the development environment, typically using HTTP.
 - `NODE_ENV=production`: For the production environment, typically using HTTPS.
 
-- **HTTP_ONLY**
+**HTTP_ONLY**
 - `HTTP_ONLY=true`: For the development environment, typically using HTTP.
 - `HTTP_ONLY=false`: For the production environment, typically using HTTPS.
 
 ### Additional Environment Variables
 
-- **SKIP_AUTH**
+**SKIP_AUTH**
 - `SKIP_AUTH=true`: Set this to `true` to skip authentication for the development environment.
 - `SKIP_AUTH=false`: Set this to `false` to enforce authentication for the development
 envirnoment.
