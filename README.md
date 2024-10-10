@@ -1,5 +1,19 @@
 # BootcampRishon
 
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Directory Structure](#directory-structure)
+3. [Tools and Libraries](#tools-and-libraries)
+4. [.env Configuration](#env-configuration)
+5. [Key Concepts](#key-concepts)
+    - [Routes and Controllers](#routes-and-controllers)
+    - [API Versioning](#api-versioning)
+    - [Middleware](#middleware)
+    - [Module](#module)
+6. [Getting Started](#getting-started)
+7. [Conclusion](#conclusion)
+
 ## Overview
 
 This project follows the MVC (Model-View-Controller) architectural pattern with a few modifications to enhance organization and maintainability.
@@ -23,6 +37,35 @@ This project uses the following tools and libraries:
 - **Express**: A minimal and flexible Node.js web application framework.
 - **Mongoose**: An ODM (Object Data Modeling) library for MongoDB and Node.js.
 - **dotenv**: A module that loads environment variables from a `.env` file into `process.env`.
+
+## .env Configuration
+
+The `.env` file is used to store environment variables that configure the application. Here are some common variables you might need to set:
+
+- `MONGODB_URL`: The connection string for your MongoDB database. Example: `MONGODB_URL=mongodb://localhost:27017/mydatabase`
+- `PORT`: The port number on which the server will run. Example: `PORT=8080`
+- `SESSION_SECRET`: A secret key used for session management. Example: `SESSION_SECRET=yourSessionSecret`
+- `JWT_SECRET`: A secret key for signing JSON Web Tokens (JWT). Example: `JWT_SECRET=mysecretkey`
+
+### Environment Variables
+
+- **NODE_ENV**
+- `NODE_ENV=development`: For the development environment, typically using HTTP.
+- `NODE_ENV=production`: For the production environment, typically using HTTPS.
+
+- **HTTP_ONLY**
+- `HTTP_ONLY=true`: For the development environment, typically using HTTP.
+- `HTTP_ONLY=false`: For the production environment, typically using HTTPS.
+
+### Additional Environment Variables
+
+- **SKIP_AUTH**
+- `SKIP_AUTH=true`: Set this to `true` to skip authentication for the development environment.
+- `SKIP_AUTH=false`: Set this to `false` to enforce authentication for the development
+envirnoment.
+
+
+Make sure to keep the `.env` file secure and do not commit it to version control. Use a `.gitignore` file to exclude it from your repository.
 
 ## Key Concepts
 
