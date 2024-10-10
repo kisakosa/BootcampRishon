@@ -27,6 +27,7 @@ This project follows the MVC (Model-View-Controller) architectural pattern with 
 - **`models/`**: Contains the MongoDB schemas. Models define the structure of the data and interact with the database.
 - **`.env`**: Contains global parameters and environment variables. This file is used to store configuration settings like database connection strings, API keys, and other sensitive information.
 - **`public/css/styles.css`**: This file serves as global styling for all files.
+- **`utils/`**: Contains utility functions and helper methods that are used across the application. These functions are designed to be reusable and can perform common tasks such as data validation, formatting, and more.
 
 ## Tools and Libraries
 
