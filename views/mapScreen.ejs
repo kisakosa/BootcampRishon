@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Screen</title>
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <!-- CSS of Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- CSS of Leaflet Routing Machine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+
+    <style>
+        body {
+            text-align: center;
+        }
+
+        #map {
+            height: 500px;
+            width: 70%;
+            margin: 0 auto;
+        }
+
+        .icons {
+            width: 35%;
+            margin: 8px;
+        }
+
+        i {
+            font-size: 24px;
+            margin: 0 4px;
+            cursor: pointer;
+        }
+
+        #toggleListView {
+            margin: 15px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: gray;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #toggleListView:hover {
+            color: white;
+            background-color: black;
+            opacity: 80%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- header -->
+
+    <h1>שם האימון </h1>
+
+    <div class="icons" style="align-self: flex-end;">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+        <i class="far fa-star" aria-hidden="true"></i>
+    </div>
+
+    <div id="map"></div>
+    <button id="toggleListView">הצגה ברשימה</button>
+
+    <!-- footer -->
+
+    <!-- JS of Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <!-- JS of Leaflet Routing Machine -->
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+    <script>
+        // יצירת אובייקט המפה ומיקוד לראשון לציון
+        var map = L.map('map').setView([31.95966273043602, 34.80208048694831], 12); // קואורדינטות של ראשון לציון
+
+        // הגדרת שכבת המפה מ-OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+
+        async function fetchRoute() {
+            try {
+                const response = await fetch(`http://localhost:8080/api/v1/routes/670668d770dec8da9fd0dc6d`);  // כאן תכניסי את כתובת ה-API הנכונה
+                const routeData = await response.json();  // קבלת נתוני המסלול בפורמט JSON
+                return routeData;
+            } catch (error) {
+                console.error("Error fetching route:", error);
+            }
+        }
+
+        async function addRouteToMap() {
+            // שליפת נתוני המסלול מה-API
+            const route = await fetchRoute();
+
+            if (!route || !route.places || route.places.length < 2) {
+                console.error("Invalid route data");
+                return;
+            }
+
+            // קבלת קואורדינטות נקודות התחלה וסיום מתוך המסלול
+            const startCoordinates = [31.95966273043602, 34.80208048694831];  // החליפי לפי הנתונים מהמסלול
+            const endCoordinates = [31.995121254317752, 34.75107383504302];  // החליפי לפי הנתונים מהמסלול
+
+            // הוספת נקודת התחלה במפה
+            var startMarker = L.marker(startCoordinates).addTo(map)
+                .bindPopup(route.places[0].name);
+
+            // הוספת נקודת סיום במפה
+            var endMarker = L.marker(endCoordinates).addTo(map)
+                .bindPopup(route.places[route.places.length - 1].name);
+
+            // הוספת מסלול באמצעות Leaflet Routing Machine
+            L.Routing.control({
+                waypoints: [
+                    L.latLng(startCoordinates),  // נקודת התחלה
+                    L.latLng(endCoordinates)  // נקודת סיום 
+                ],
+                routeWhileDragging: false,
+                createMarker: function (i, waypoint, n) {
+                    return null;  // מחזיר null כדי שלא יתווסף סימן (marker)
+                },
+                show: false,
+                draggableWaypoints: false  // לא לאפשר לגרור נקודות
+            }).addTo(map);
+        }
+
+        // קריאה לפונקציה להוספת המסלול למפה
+        addRouteToMap();  // יש להחליף את ה-ID של המסלול לפי הצורך
+
+        // הוספת סימון (marker) ב-Rishon StartUp
+        // var marker = L.marker([31.995121254317752, 34.75107383504302]).addTo(map)
+        //     .bindPopup('Rishon StartUp');
+        // .openPopup();
+    </script>
+</body>
+
+</html>
