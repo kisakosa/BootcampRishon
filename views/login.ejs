@@ -7,54 +7,6 @@
     <%- include('./partials/navbar', {currentPage: 'login'}) %>
     <div class="container">
         <h1>Login page</h1>
-        <script>
-            $(document).ready(function() {
-                $.ajax({
-                    url: '/api/v1/auth/login',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        email: 'alice@gmail.com',
-                        password: '1234'
-                    }),
-                    success: function(response) {
-                        console.log('Login successful:', response);
-
-                        // Check if the authToken cookie exists
-                        // note that the authorization token is stored in a cookie named 'authToken'
-                        // and the auth middleware will look for this cookie to authenticate the user request
-                        // the auth middleware is used in different api routes to authenticate the user (e.g., /api/v1/auth/profile)
-
-                        const authTokenCookie = document.cookie.split('; ').find(row => row.startsWith('authToken='));
-                        if (authTokenCookie) {
-                            const authToken = authTokenCookie.split('=')[1];
-                            console.log('Auth Token:', authToken);
-                            
-                            // Now with the auth token, we can make authenticated requests
-                            $.ajax({
-                                url: '/api/v1/auth/',
-                                type: 'GET',
-                                headers: {
-                                    'Authorization': `Bearer ${authToken}`
-                                },
-                                success: function(response) {
-                                    console.log('Profile:', response);
-                                },
-                                error: function(error) {
-                                    console.error('Profile request failed:', error);
-                                }
-                            });
-                        } else {
-                            console.error('Auth token not found in cookies.');
-                        }
-                    },
-                    error: function(error) {
-                        console.error('Login failed:', error);
-                    }
-                });
-            });
-        </script>
-        <p>Open the browser console to see the output.</p>
     </div>
 </body>
 </html>
