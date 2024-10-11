@@ -11,6 +11,9 @@ const placeSchema = new mongoose.Schema({
     img: {
         type: String
     },
+    youtube: {
+        type: String
+    },
     coordinates: {
         longitude: {
             type: Number,
