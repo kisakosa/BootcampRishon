@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('./partials/head') %>
+
+    <style>
+        .container {
+            direction: rtl;
+        }
+
+        .btn-group-toggle .btn.active {
+            background-color: black !important;
+            color: #fff;
+        }
+
+        #nextButton {
+            margin: 15px auto;
+            display: block;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: gray;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #nextButton:hover {
+            color: white;
+            background-color: black;
+            opacity: 80%;
+        }
+
+        .text-danger {
+            color: red;
+            margin-left: 5px;
+        }
+
+        .tags-list {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+         .tag-button {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .tag-button.selected {
+            background-color: black;
+            color: white;
+        } 
+    </style>
+
+    <body>
+        <%- include('./partials/navbar', {currentPage: 'Manage Route' }) %>
+
+            <div class="container mt-5" style="max-width: 50%; margin: auto;">
+                <h1 id="form-title" class="text-center">הוסף / ערוך אימון</h1>
+                <form id="routeForm">
+                    <div class="form-group">
+                        <label for="routeName">שם האימון <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="routeName" name="name" placeholder="הכנס שם אימון"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="routeDescription">תיאור <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="routeDescription" name="description" rows="3"
+                            placeholder="הכנס תיאור"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>מרחק <span class="text-danger">*</span></label>
+                        <br>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-dark rounded" onclick="selectDistance('short')">
+                                <input type="radio" name="distance" value="1" id="distanceShort" autocomplete="off"
+                                    style="display: none;"> קצר (0-5 ק"מ)
+                            </label>
+                            <label class="btn btn-outline-dark rounded mx-2" onclick="selectDistance('medium')">
+                                <input type="radio" name="distance" value="2" id="distanceMedium" autocomplete="off"
+                                    style="display: none;"> בינוני (5-10 ק"מ)
+                            </label>
+                            <label class="btn btn-outline-dark rounded" onclick="selectDistance('long')">
+                                <input type="radio" name="distance" value="3" id="distanceLong" autocomplete="off"
+                                    style="display: none;">
+                                ארוך (10+ ק"מ)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>משך זמן <span class="text-danger">*</span></label>
+                        <br>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-dark rounded" onclick="selectDuration('short')">
+                                <input type="radio" name="duration" value="1" id="durationShort" autocomplete="off"
+                                    style="display: none;"> קצר (0-30 דקות)
+                            </label>
+                            <label class="btn btn-outline-dark rounded mx-2" onclick="selectDuration('medium')">
+                                <input type="radio" name="duration" value="2" id="durationMedium" autocomplete="off"
+                                    style="display: none;"> בינוני (30-60 דקות)
+                            </label>
+                            <label class="btn btn-outline-dark rounded" onclick="selectDuration('long')">
+                                <input type="radio" name="duration" value="3" id="durationLong" autocomplete="off"
+                                    style="display: none;">
+                                ארוך (60+ דקות)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="routeTags">תגים <span class="text-danger">*</span></label>
+                        <div id="routeTags" placeholder="הכנס תגים" >
+                            <!-- All Tags -->
+                        </div>
+                    </div>
+                    <button type="submit" id="nextButton">הבא</button>
+                </form>
+            </div>
+
+
+            <script>
+                $(document).ready(async function () {
+                    const formTitle = $('#form-title');
+                    const routeForm = $('#routeForm');
+
+                    buildCategoryTagsObject();
+
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const routeId = urlParams.get('id');
+
+                    if (routeId) {
+                        formTitle.text('ערוך אימון');
+                        await fetchRouteData(routeId);
+
+                        routeForm.on('submit', function (e) {
+                            e.preventDefault();
+                            updateRoute(routeId);
+                        });
+                    } else {
+                        formTitle.text('הוסף אימון חדש');
+
+                        routeForm.on('submit', function (e) {
+                            e.preventDefault();
+                            addNewRoute();
+                        });
+                    }
+                });
+
+                let places = [];
+
+                async function fetchRouteData(routeId) {
+                    try {
+                        const response = await fetch(`/api/v1/routes/${routeId}`);
+                        if (!response.ok) {
+                            throw new Error(`Error fetching route. Status: ${response.status}`);
+                        }
+                        const route = await response.json();
+
+                        $('#routeName').val(route.name);
+                        $('#routeDescription').val(route.description);
+
+                        selectDistance(route.distance);
+                        selectDuration(route.duration);
+
+                        if (route.places)
+                            places = route.places;
+
+                        if (route.tags) {
+                            route.tags.forEach(tagId => {
+                                $(`.tag-button[data-tag-id="${tagId._id}"]`).addClass('selected');
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error fetching route:', error);
+                        alert('There was an error fetching the route data. Please try again later.');
+                    }
+                }
+
+                function selectDistance(value) {
+                    $('label[onclick^="selectDistance"]').removeClass('active bg-primary');
+                    $(`label[onclick="selectDistance('${value}')"]`).addClass('active bg-primary');
+                }
+
+                function selectDuration(value) {
+                    $('label[onclick^="selectDuration"]').removeClass('active bg-primary');
+                    $(`label[onclick="selectDuration('${value}')"]`).addClass('active bg-primary');
+                }
+
+                function getSelectedTags() {
+                    let selectedTags = [];
+                    $('.tag-button.selected').each(function () {
+                        const tagId = $(this).data('tag-id');
+                        selectedTags.push(tagId);
+                    });
+                    return selectedTags;
+                }
+
+                // Function to update a route
+                function updateRoute(routeId) {
+                    const updatedRoute = {
+                        _id: routeId,
+                        name: $('#routeName').val(),
+                        description: $('#routeDescription').val(),
+                        distance: $('input[name="distance"]:checked').val(),
+                        duration: $('input[name="duration"]:checked').val(),
+                        places: places || [],
+                        tags: getSelectedTags(),
+                        isRelevant: true
+                    };
+
+                    sessionStorage.setItem('routeData', JSON.stringify(updatedRoute));
+                    window.location.href = '/admin/update-route/places';
+                }
+
+                // Function to add a new route
+                function addNewRoute() {
+                    const newRoute = {
+                        name: $('#routeName').val(),
+                        description: $('#routeDescription').val(),
+                        distance: $('input[name="distance"]:checked').val(),
+                        duration: $('input[name="duration"]:checked').val(),
+                        places: [],
+                        tags: getSelectedTags(),
+                        isRelevant: true
+                    };
+
+                    sessionStorage.setItem('routeData', JSON.stringify(newRoute));
+                    window.location.href = '/admin/add-new-route/places';
+                }
+
+                async function buildCategoryTagsObject() {
+                    const response = await fetch('/api/v1/categories/search?type=Route')
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch categories. Status: ${responseCategories.status}`);
+                    }
+
+                    const categories = await response.json();
+
+                    for (const category of categories) {
+                        try {
+                            const responseTags = await fetch(`/api/v1/tags/category/${category._id}`)
+                            if (!responseTags.ok) {
+                                throw new Error(`Failed to fetch tags for category: ${category.name}. Status: ${responseTags.status}`);
+                            }
+
+                            const tags = await responseTags.json();
+
+                            const categoryHtml = `
+                            <div class="category-section">
+                                <h5>${category.name}</h5>
+                                <div class="tags-list">
+                                    ${tags.map(tag => `
+                                        <button type="button" class="tag-button" data-tag-id="${tag._id}">
+                                            ${tag.name}
+                                        </button>`).join('')}
+                                </div>
+                            </div>
+                        `;
+
+                            $('#routeTags').append(categoryHtml);
+                        }
+
+                        catch (error) {
+                            console.error(`Error fetching tags for category ${category.name}:`, error);
+                            alert(`Error loading tags for category: ${category.name}. Please try again later.`);
+                        }
+                    }
+                }
+
+                $(document).on('click', '.tag-button', function () {
+                    $(this).toggleClass('selected');
+                });
+
+            </script>
+
+    </body>
+
+</html>
