@@ -11,6 +11,20 @@ exports.getAllTags = asyncHandler(async (req, res) => {
     res.json(tags);
 });
 
+// Controller function to search for Tags
+exports.searchTags = asyncHandler(async (req, res) => {
+    // Fetch all Tags from the database that match the search query
+    const { name, categories } = req.query;
+    const query = {};
+    if (name) query.name = { $regex: name, $options: 'i' };
+    if (categories) query.category = { $in: categories.split(',') };
+    
+    const tags = await Tag.find(query)
+        .populate('category');
+
+    res.json(tags);
+});
+
 // Controller function to create a new Tag
 exports.createTag = asyncHandler(async (req, res) => {
     // Create a new Tag instance
@@ -49,4 +63,11 @@ exports.updateTag = asyncHandler(async (req, res) => {
 exports.deleteTag = asyncHandler(async (req, res) => {
     await Tag.findByIdAndDelete(req.params.id);
     res.json({ message: 'Tag deleted successfully' });
+});
+
+// Controller function to get all Tags for a Category
+exports.getTagsForCategory = asyncHandler(async (req, res) => {
+    // Fetch all Tags for the Category by ID from the database
+    const tags = await Tag.find({ category: req.params.id });
+    res.json(tags);
 });

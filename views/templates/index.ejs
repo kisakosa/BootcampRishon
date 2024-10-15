@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../partials/head') %>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Roboto', sans-serif;
+        }
+        #main-content {
+            padding: 1rem 0.5rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: calc(100vh - 56px);
+        }
+        #routesTable {
+            padding: 1rem;
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-x: hidden;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            color: #fff;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .progress {
+            height: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .progress-bar {
+            background-color: #007bff;
+        }
+        .table {
+            min-width: 100%;
+            background-color: #fff;
+        }
+        .table th {
+            text-align: center;
+        }
+        .table th, .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .table tbody + tbody {
+            border-top: 2px solid #dee2e6;
+        }
+        .table .table {
+            background-color: #fff;
+        }
+        .rtl {
+            direction: rtl;
+            text-align: right;
+            list-style-position: inside;
+        }
+    </style>
+    <body data-spy="scroll" data-target=".fixed-top">
+        <!-- Navigation -->
+        <%- include('../partials/navbar', {currentPage: 'template home'}) %>
+        <!-- end of navigation -->
+        <div id="main-content">
+            <h1>Routes</h1>
+            <div class="my-4" id="routesTable">
+                <form id="searchForm" class="mb-4">
+                    <div class="form-group">
+                        <label for="routeName">Route Name</label>
+                        <input type="text" class="form-control" id="routeName" name="name" placeholder="Enter route name">
+                    </div>
+                    <div class="form-group">
+                        <label for="routeDistance">Distance</label>
+                        <select class="form-control" id="routeDistance" name="distance">
+                            <option value="">All</option>
+                            <option value="short">Short (0-5 km)</option>
+                            <option value="medium">Medium (5-10 km)</option>
+                            <option value="long">Long (10+ km)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="routeDuration">Duration</label>
+                        <select class="form-control" id="routeDuration" name="duration">
+                            <option value="">All</option>
+                            <option value="short">Short (0-30 mins)</option>
+                            <option value="medium">Medium (30-60 mins)</option>
+                            <option value="long">Long (60+ mins)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="routeCategories">Categories</label>
+                        <select class="form-control" id="routeCategories" name="categories" multiple>
+                            <!-- Categories will be dynamically populated -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="routeTags">Tags</label>
+                        <select class="form-control" id="routeTags" name="tags" multiple>
+                            <!-- Tags will be dynamically populated based on the selected category -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="routeIsRelevant">Is Relevant</label>
+                        <select class="form-control" id="routeIsRelevant" name="isRelevant">
+                            <option value="">Select relevance</option>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-right: 1rem;">Search</button>
+                    <button type="reset" class="btn btn-secondary" onclick="resetFormAndReloadTable()">Reset</button>
+                </form>
+                <button class="btn btn-primary" onclick="addRoute()">Add Route</button>
+                <div style="display: block; overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Route ID</th>
+                                <th scope="col" style="min-width: 200px;">Name</th>
+                                <th scope="col" style="min-width: 200px;">Description</th>
+                                <th scope="col">Distance</th>
+                                <th scope="col">Duration</th>
+                                <th scope="col" style="min-width: 200px;">Tags</th>
+                                <th scope="col">isRelevant</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Routes will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script>
+            let routesData = [];
+            async function fetchRoutes() {
+                const response = await fetch('/api/v1/routes');
+                const routes = await response.json();
+                routesData = routes;
+                fillRoutesTable(routes);
+            }
+
+            $(document).ready(async function() {
+                await fetchRoutes();
+                $.ajax({
+                    url: '/api/v1/categories/search?type=Route',
+                    method: 'GET',
+                    success: function(categories) {
+                        const categorySelect = $('#routeCategories');
+                        categories.forEach(category => {
+                            categorySelect.append(new Option(category.name, category._id));
+                        });
+                    }
+                });
+
+                $('#routeCategories').change(function() {
+                    const selectedCategories = $(this).val();
+                    if (selectedCategories.length > 0) {
+                        const query = { categories: selectedCategories.join(',') };
+
+                        // Remove empty fields from the query
+                        Object.keys(query).forEach(key => {
+                            if (!query[key]) {
+                                delete query[key];
+                            }
+                        });
+
+                        // Convert query object to query string
+                        const queryString = $.param(query);
+
+                        $.ajax({
+                            url: `/api/v1/tags/search?${queryString}`,
+                            method: 'GET',
+                            success: function(tags) {
+                                const tagsSelect = $('#routeTags');
+                                tagsSelect.empty(); // Clear previous tags
+                                tags.forEach(tag => {
+                                    tagsSelect.append(new Option(tag.name, tag._id));
+                                });
+                            }
+                        });
+                    } else {
+                        $('#routeTags').empty(); // Clear tags if no category is selected
+                    }
+                });
+                
+                $('#searchForm').submit(function(event) {
+                    event.preventDefault(); // Prevent the default form submission
+
+                    const distance = $('#routeDistance').val();
+                    const duration = $('#routeDuration').val();
+
+                    let distanceRange = {};
+                    let durationRange = {};
+                    if (distance === 'short') {
+                        distanceRange = { min: 0, max: 5 };
+                    } else if (distance === 'medium') {
+                        distanceRange = { min: 5, max: 10 };
+                    } else if (distance === 'long') {
+                        distanceRange = { min: 10, max: 1000 };
+                    }
+
+                    if (duration === 'short') {
+                        durationRange = { min: 0, max: 30 };
+                    } else if (duration === 'medium') {
+                        durationRange = { min: 30, max: 60 };
+                    } else if (duration === 'long') {
+                        durationRange = { min: 60, max: 1000 };
+                    }
+
+                    const query = {
+                        name: $('#routeName').val(),
+                        ...(Object.keys(distanceRange).length ? { distanceRange } : {}),
+                        ...(Object.keys(durationRange).length ? { durationRange } : {}),
+                        tags: $('#routeTags').val() ? $('#routeTags').val().join(',') : undefined,
+                        // still not implemented - routes that include the place
+                        places: $('#routePlaces').val() ? $('#routePlaces').val() : undefined,
+                        isRelevant: $('#routeIsRelevant').val()
+                    };
+
+                    // Remove empty fields from the query
+                    Object.keys(query).forEach(key => {
+                        if (!query[key]) {
+                            delete query[key];
+                        }
+                    });
+
+                    // Convert query object to query string
+                    const queryString = $.param(query);
+                    console.log(queryString);
+                    // Make the AJAX request
+                    $.ajax({
+                        url: `/api/v1/routes/search?${queryString}`,
+                        method: 'GET',
+                        success: function(routes) {
+                            fillRoutesTable(routes);
+                        }
+                    });
+                });
+            });
+            function fillRoutesTable(routes) {
+                    const tbody = $('#routesTable table tbody');
+                    tbody.empty(); // Clear previous results
+
+                    routes.forEach(route => {
+                        const tagsList = route.tags.map(tag => {
+                            const isHebrew = /[\u0590-\u05FF]/.test(tag.name); // Check if the tag contains Hebrew characters
+                            const directionClass = isHebrew ? 'rtl' : '';
+                            return `<li class="${directionClass}">${tag.name}</li>`;
+                        }).join('');
+                        const isNameHebrew = /[\u0590-\u05FF]/.test(route.name);
+                        const nameDirectionClass = isNameHebrew ? 'rtl' : '';
+                        const isDescHebrew = /[\u0590-\u05FF]/.test(route.description);
+                        const descDirectionClass = isDescHebrew ? 'rtl' : '';
+                        const row = `<tr>
+                            <td>${route._id}</td>
+                            <td class="${nameDirectionClass}">${route.name}</td>
+                            <td class="${descDirectionClass}">${route.description}</td>
+                            <td>${route.distance}</td>
+                            <td>${route.duration}</td>
+                            <td><ul>${tagsList}</ul></td>
+                            <td>${route.isRelevant}</td>
+                            <td>
+                                <button class="btn btn-primary" onclick="deleteRoute('${route._id}')">Delete</button>
+                                <button class="btn btn-primary" onclick="updateRoute('${route._id}')">Update</button>
+                            </td>
+                        </tr>`;
+                        tbody.append(row);
+                    });
+            }
+
+            // Function to reset the form and reload the table with the stored routes
+            function resetFormAndReloadTable() {
+                document.getElementById('searchForm').reset(); // Reset the form
+                $('#routeTags').empty(); // Clear the tags
+                fillRoutesTable(routesData); // Reload the table with the stored routes
+            }
+
+            // Function to delete a route
+            function deleteRoute(routeId) {
+                $.ajax({
+                    url: `/api/v1/routes/${routeId}`,
+                    method: 'DELETE',
+                    success: function() {
+                        fetchRoutes();
+                    }
+                });
+            }
+
+            // Function to add a new route
+            function addRoute() {
+                const newRoute = {
+                    name: 'New Route',
+                    description: 'New Route Description',
+                    distance: 0,
+                    duration: 0,
+                    tags: [],
+                    isRelevant: false
+                };
+
+                $.ajax({
+                    url: '/api/v1/routes',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(newRoute),
+                    success: function() {
+                        fetchRoutes();
+                    }
+                });
+            }
+
+            // Function to update a route
+            function updateRoute(routeId) {
+                const updatedRoute = {
+                    name: 'Updated Route',
+                    description: 'Updated Route Description',
+                    distance: 0,
+                    duration: 0,
+                    tags: [],
+                    isRelevant: false
+                };
+
+                $.ajax({
+                    url: `/api/v1/routes/${routeId}`,
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(updatedRoute),
+                    success: function() {
+                        fetchRoutes();
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

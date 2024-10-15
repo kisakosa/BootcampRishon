@@ -9,6 +9,34 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
     res.json(users);
 });
 
+// Controller function to search for Users
+exports.searchUsers = asyncHandler(async (req, res) => {
+    const { name, email, role } = req.query;
+
+    // Build the query object
+    let query = {};
+
+    // Regex Search for Name
+    if (name) {
+        query.name = { $regex: name, $options: 'i' }; // Case-insensitive search
+    }
+
+    // Regex Search for Email
+    if (email) {
+        query.email = { $regex: email, $options: 'i' }; // Case-insensitive search
+    }
+
+    // Filter by role ('customer', 'admin')
+    if (role) {
+        query.role = role;
+    }
+    
+    // Fetch all Users from the database that match the query
+    const users = await User.find(query, '-password').sort({ _id: -1 });
+
+    res.json(users);
+});
+
 // Controller function to create a new User
 exports.createUser = asyncHandler(async (req, res) => {
     // Create a new User instance

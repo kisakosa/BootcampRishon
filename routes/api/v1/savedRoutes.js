@@ -8,11 +8,11 @@ const router = express.Router();
 // Get saved routes for a user
 router.get('/', auth, savedRoutesController.getSavedRoutes);
 
-// Add a saved route for a user
-router.post('/', SecurityMiddleware.secure(), SecurityMiddleware.secure(), auth, savedRoutesController.addSavedRoute);
+// Add a route for a user saved routes
+router.post('/:routeId', SecurityMiddleware.secure(), validateObjectId('routeId'), auth, savedRoutesController.addSavedRoute);
 
 // Remove a saved route by ID for a user
-router.delete('/:routeId', SecurityMiddleware.secure(), auth, savedRoutesController.removeSavedRoute);
+router.delete('/:routeId', SecurityMiddleware.secure(), validateObjectId('routeId'), auth, savedRoutesController.removeSavedRoute);
 
 // Handles any saved route errors
 router.use((err, req, res, next) => {

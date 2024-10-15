@@ -13,16 +13,16 @@ router.get('/', placeController.getAllPlaces);
 router.get('/search', SecurityMiddleware.secure(), placeController.getPlaceByQuery);
 
 // Route to get a Place by ID
-router.get('/:id', SecurityMiddleware.secure(), validateObjectId, placeController.getPlaceById);
+router.get('/:id', SecurityMiddleware.secure(), validateObjectId('id'), placeController.getPlaceById);
 
 // Route to create a new Place
 router.post('/', SecurityMiddleware.secure(), auth, checkRole('admin'), placeController.createPlace);
 
 // Route to update a Place by ID
-router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, placeController.updatePlace);
+router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), placeController.updatePlace);
 
 // Route to delete a Place by ID
-router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, placeController.deletePlace);
+router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), placeController.deletePlace);
 
 // Handles any Place errors
 router.use((err, req, res, next) => {

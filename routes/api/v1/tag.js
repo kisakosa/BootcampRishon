@@ -9,18 +9,23 @@ const router = express.Router();
 // Get all tags
 router.get('/', tagController.getAllTags);
 
+// Search for tags
+router.get('/search', SecurityMiddleware.secure(), tagController.searchTags);
+
 // Get a single tag by ID
-router.get('/:id', SecurityMiddleware.secure(), validateObjectId, tagController.getTagById);
+router.get('/:id', SecurityMiddleware.secure(), validateObjectId('id'), tagController.getTagById);
 
 // Create a new tag
 router.post('/', SecurityMiddleware.secure(), auth, checkRole('admin'), tagController.createTag);
 
 // Update a tag by ID
-router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, tagController.updateTag);
+router.put('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), tagController.updateTag);
 
 // Delete a tag by ID
-router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId, tagController.deleteTag);
+router.delete('/:id', SecurityMiddleware.secure(), auth, checkRole('admin'), validateObjectId('id'), tagController.deleteTag);
 
+// Get all tags for category by ID
+router.get('/category/:id', SecurityMiddleware.secure(), validateObjectId('id'), tagController.getTagsForCategory);
 
 // Handles any tag errors
 router.use((err, req, res, next) => {

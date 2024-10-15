@@ -1,11 +1,25 @@
 const Category = require('../../../models/Category');
-const Tag = require('../../../models/Tag');
 const asyncHandler = require('../../../utils/asyncHandler.js'); // Adjust the path as needed
 
 // Controller function to get all Categories
 exports.getAllCategories = asyncHandler(async (req, res) => {
     // Fetch all Categories from the database
     const categories = await Category.find().sort({ _id: -1 });
+    res.json(categories);
+});
+
+// Controller function to search for Categories
+exports.searchCategories = asyncHandler(async (req, res) => {
+    // Fetch all Categories from the database that match the search query
+    const { name, type } = req.query;
+    let query = {};
+    if (name) {
+        query.name = { $regex: name, $options: 'i' };
+    }
+    if (type) {
+        query.for = type;
+    }
+    const categories = await Category.find(query).sort({ _id: -1 });
     res.json(categories);
 });
 
@@ -42,11 +56,4 @@ exports.deleteCategory = asyncHandler(async (req, res) => {
     // Delete the Category by ID from the database
     await Category.findByIdAndDelete(req.params.id);
     res.json({ message: 'Category deleted successfully' });
-});
-
-// Controller function to get all Tags for a Category
-exports.getTagsForCategory = asyncHandler(async (req, res) => {
-    // Fetch all Tags for the Category by ID from the database
-    const tags = await Tag.find({ category: req.params.id });
-    res.json(tags);
 });
