@@ -113,10 +113,9 @@
                         .then(response => response.json())
                         .then(data => {
                             const select = $('#stationSelect');
-                            select.empty(); // ניקוי כל האפשרויות הקודמות
-                            select.append('<option selected disabled>בחר תחנה</option>'); // אפשרות ברירת מחדל
+                            select.empty(); 
+                            select.append('<option selected disabled>בחר תחנה</option>'); 
 
-                            // הוספת תחנות לרשימה
                             data.forEach(place => {
                                 select.append(`<option value="${place._id}">${place.name}</option>`);
                             });
@@ -152,6 +151,8 @@
                 });
 
                 $('#saveRouteBtn').on('click', async function () {
+                    const routeData = JSON.parse(sessionStorage.getItem('routeData'));
+
                     const route = {
                         ...routeData,
                         places: []

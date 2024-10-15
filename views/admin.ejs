@@ -12,7 +12,6 @@
         }
 
         #addNewRoute {
-            /* margin: 15px; */
             padding: 15px 30px;
             font-size: 18px;
             background-color: gray;
@@ -66,7 +65,7 @@
 
                 function showRoutes(routes) {
                     const container = $('#routesContainer');
-                    container.empty(); // Clear the container before filling
+                    container.empty(); 
 
                     routes.forEach(route => {
                         const areaTag = route.tags.find(tag => tag.category.name === 'אזור');

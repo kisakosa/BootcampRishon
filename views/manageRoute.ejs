@@ -42,7 +42,7 @@
             padding: 10px 0;
         }
 
-         .tag-button {
+        .tag-button {
             background-color: #f0f0f0;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -54,7 +54,7 @@
         .tag-button.selected {
             background-color: black;
             color: white;
-        } 
+        }
     </style>
 
     <body>
@@ -73,47 +73,22 @@
                         <textarea class="form-control" id="routeDescription" name="description" rows="3"
                             placeholder="הכנס תיאור"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label>מרחק <span class="text-danger">*</span></label>
-                        <br>
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                            <label class="btn btn-outline-dark rounded" onclick="selectDistance('short')">
-                                <input type="radio" name="distance" value="1" id="distanceShort" autocomplete="off"
-                                    style="display: none;"> קצר (0-5 ק"מ)
-                            </label>
-                            <label class="btn btn-outline-dark rounded mx-2" onclick="selectDistance('medium')">
-                                <input type="radio" name="distance" value="2" id="distanceMedium" autocomplete="off"
-                                    style="display: none;"> בינוני (5-10 ק"מ)
-                            </label>
-                            <label class="btn btn-outline-dark rounded" onclick="selectDistance('long')">
-                                <input type="radio" name="distance" value="3" id="distanceLong" autocomplete="off"
-                                    style="display: none;">
-                                ארוך (10+ ק"מ)
-                            </label>
-                        </div>
+
+                    <label for="routeDistance">מרחק <span class="text-danger">*</span></label>
+                    <div class="mb-3 input-group" style="direction: ltr;">
+                        <span class="input-group-text">ק"מ</span>
+                        <input type="number" id="routeDistance" class="form-control" placeholder="הזן מרחק" min="0" step="0.1" aria-label="הזן מרחק" style="direction: rtl;">
                     </div>
-                    <div class="form-group">
-                        <label>משך זמן <span class="text-danger">*</span></label>
-                        <br>
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                            <label class="btn btn-outline-dark rounded" onclick="selectDuration('short')">
-                                <input type="radio" name="duration" value="1" id="durationShort" autocomplete="off"
-                                    style="display: none;"> קצר (0-30 דקות)
-                            </label>
-                            <label class="btn btn-outline-dark rounded mx-2" onclick="selectDuration('medium')">
-                                <input type="radio" name="duration" value="2" id="durationMedium" autocomplete="off"
-                                    style="display: none;"> בינוני (30-60 דקות)
-                            </label>
-                            <label class="btn btn-outline-dark rounded" onclick="selectDuration('long')">
-                                <input type="radio" name="duration" value="3" id="durationLong" autocomplete="off"
-                                    style="display: none;">
-                                ארוך (60+ דקות)
-                            </label>
-                        </div>
+                    
+                    <label for="routeDuration">זמן <span class="text-danger">*</span></label>
+                    <div class="mb-3 input-group" style="direction: ltr;">
+                        <span class="input-group-text">דקות</span>
+                        <input type="number" id="routeDuration" class="form-control" placeholder="הזן זמן" min="0" aria-label="הזן זמן" style="direction: rtl;">
                     </div>
-                    <div class="form-group">
+                    
+                   <div class="form-group">
                         <label for="routeTags">תגים <span class="text-danger">*</span></label>
-                        <div id="routeTags" placeholder="הכנס תגים" >
+                        <div id="routeTags" placeholder="הכנס תגים">
                             <!-- All Tags -->
                         </div>
                     </div>
@@ -163,8 +138,8 @@
                         $('#routeName').val(route.name);
                         $('#routeDescription').val(route.description);
 
-                        selectDistance(route.distance);
-                        selectDuration(route.duration);
+                        $('#routeDistance').val(route.distance);
+                        $('#routeDuration').val(route.duration);
 
                         if (route.places)
                             places = route.places;
@@ -180,15 +155,6 @@
                     }
                 }
 
-                function selectDistance(value) {
-                    $('label[onclick^="selectDistance"]').removeClass('active bg-primary');
-                    $(`label[onclick="selectDistance('${value}')"]`).addClass('active bg-primary');
-                }
-
-                function selectDuration(value) {
-                    $('label[onclick^="selectDuration"]').removeClass('active bg-primary');
-                    $(`label[onclick="selectDuration('${value}')"]`).addClass('active bg-primary');
-                }
 
                 function getSelectedTags() {
                     let selectedTags = [];
@@ -205,8 +171,8 @@
                         _id: routeId,
                         name: $('#routeName').val(),
                         description: $('#routeDescription').val(),
-                        distance: $('input[name="distance"]:checked').val(),
-                        duration: $('input[name="duration"]:checked').val(),
+                        distance: $('#routeDistance').val(),
+                        duration: $('#routeDuration').val(),
                         places: places || [],
                         tags: getSelectedTags(),
                         isRelevant: true
@@ -221,8 +187,8 @@
                     const newRoute = {
                         name: $('#routeName').val(),
                         description: $('#routeDescription').val(),
-                        distance: $('input[name="distance"]:checked').val(),
-                        duration: $('input[name="duration"]:checked').val(),
+                        distance: $('#routeDistance').val(),
+                        duration: $('#routeDuration').val(),
                         places: [],
                         tags: getSelectedTags(),
                         isRelevant: true
