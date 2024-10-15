@@ -1,13 +1,14 @@
+// controllers/api/v1/auth.js
 const User = require('../../../models/User'); // Import the User model
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const asyncHandler = require('../../../utils/asyncHandler'); // Adjust the path as needed
+const asyncHandler = require('../../../utils/asyncHandler'); // Import the asyncHandler utility
 
 // Register a new user
 exports.register = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
-        return res.status(400).send('name, email, and password are required.');
+        return res.status(400).send('Name, email, and password are required.');
     }
 
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -20,7 +21,9 @@ exports.register = asyncHandler(async (req, res) => {
         return res.status(400).send('User already registered.');
     }
 
-    user = new User({ name, email, password, role: 'user' });
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10); // Use 10 rounds of salting
+    user = new User({ name, email, password: hashedPassword, role: 'user' });
     await user.save();
 
     const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -113,7 +116,7 @@ exports.update = asyncHandler(async (req, res) => {
     }
 
     if (password) {
-        user.password = password;
+        user.password = await bcrypt.hash(password, 10); // Hash the new password
     }
 
     await user.save();
