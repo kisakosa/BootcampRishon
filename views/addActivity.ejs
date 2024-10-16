@@ -11,19 +11,8 @@
 
         #map {
             height: 400px;
-            width: 100%;
+            /* width: 70%; */
             margin-top: 20px;
-        }
-
-        /* #map {
-            height: 500px;
-            width: 70%;
-            margin: 0 auto;
-        } */
-
-        .text-danger {
-            color: red;
-            margin-left: 5px;
         }
 
 
@@ -45,11 +34,16 @@
             background-color: black;
             opacity: 80%;
         }
+
+        .text-danger {
+            color: red;
+            margin-left: 5px;
+        }
     </style>
 
     <body>
         <%- include('./partials/navbar', {currentPage: 'Add an activity' }) %>
-            <div class="container">
+            <div class="container" style="width: 70%;">
                 <h1>הוספת תחנה</h1>
 
                 <!-- Search Input -->
@@ -65,8 +59,9 @@
 
                 <!-- Coordinates Input -->
                 <div class="form-group d-flex align-items-center">
-                    <label for="coordinatesInput" class="mb-0 ms-2">מיקום:</label>
-                    <input type="text" id="coordinatesInput" class="form-control flex-grow-1" placeholder="קואורדינטות">
+                    <label for="coordinatesInput" class="mb-0 ms-2">מיקום: <span class="text-danger">*</span></label>
+                    <input type="text" id="coordinatesInput" class="form-control flex-grow-1" placeholder="קואורדינטות"
+                        required>
                 </div>
 
                 <!-- Map -->
@@ -158,7 +153,7 @@
                                         selectPlace(place.display_name, place.lat, place.lon);
                                     });
 
-                                    resultsList.append(listItem); 
+                                    resultsList.append(listItem);
                                 });
                             } else {
                                 resultsList.hide(); // Hide if no results found
@@ -168,17 +163,17 @@
                 });
 
                 function selectPlace(name, lat, lon) {
-                    const placeSearchInput = $('#placeSearchInput'); 
-                    const resultsList = $('#searchResults'); 
-                    const coordinatesInput = $('#coordinatesInput'); 
+                    const placeSearchInput = $('#placeSearchInput');
+                    const resultsList = $('#searchResults');
+                    const coordinatesInput = $('#coordinatesInput');
 
-                    placeSearchInput.val(name); 
-                    resultsList.hide(); 
+                    placeSearchInput.val(name);
+                    resultsList.hide();
 
-                    coordinatesInput.val(`${lat}, ${lon}`); 
+                    coordinatesInput.val(`${lat}, ${lon}`);
 
-                    setMarker(lat, lon); 
-                    console.log(`Selected place: ${name} (Lat: ${lat}, Lon: ${lon})`); 
+                    setMarker(lat, lon);
+                    console.log(`Selected place: ${name} (Lat: ${lat}, Lon: ${lon})`);
                 }
 
                 // פונקציה לחיפוש מקום בקואורדינטות הספציפיות
@@ -223,7 +218,7 @@
                         })
                         .catch(error => {
                             console.error('Error finding nearby location:', error);
-                            return "תחנה חדשה"; 
+                            return "תחנה חדשה";
                         });
                 }
 
