@@ -58,11 +58,13 @@
             color: white;
         } */
 
+        .add-tag-button,
         .tag-button {
             margin: 5px;
             background-color: #f8f9fa;
         }
 
+        .add-tag-button.selected,
         .tag-button.selected {
             background-color: black;
             color: white;
@@ -72,7 +74,7 @@
     <body>
         <%- include('./partials/navbar', {currentPage: 'Manage Route' }) %>
 
-            <div class="container mt-5" style="max-width: 50%; margin: auto;">
+            <div class="container mt-5" style="max-width: 70%; margin: auto;">
                 <h1 id="form-title" class="text-center">הוסף / ערוך אימון</h1>
                 <form id="routeForm">
                     <div class="form-group">
@@ -81,19 +83,19 @@
                             required>
                     </div>
                     <div class="form-group">
-                        <label for="routeDescription">תיאור <span class="text-danger">*</span></label>
+                        <label for="routeDescription">תיאור </label>
                         <textarea class="form-control" id="routeDescription" name="description" rows="3"
                             placeholder="הכנס תיאור"></textarea>
                     </div>
 
-                    <label for="routeDistance">מרחק <span class="text-danger">*</span></label>
+                    <label for="routeDistance">מרחק </label>
                     <div class="mb-3 input-group" style="direction: ltr;">
                         <span class="input-group-text">ק"מ</span>
                         <input type="number" id="routeDistance" class="form-control" placeholder="הזן מרחק" min="0"
                             step="0.1" aria-label="הזן מרחק" style="direction: rtl;">
                     </div>
 
-                    <label for="routeDuration">זמן <span class="text-danger">*</span></label>
+                    <label for="routeDuration">זמן</label>
                     <div class="mb-3 input-group" style="direction: ltr;">
                         <span class="input-group-text">דקות</span>
                         <input type="number" id="routeDuration" class="form-control" placeholder="הזן זמן" min="0"
@@ -101,7 +103,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="routeTags">תגיות <span class="text-danger">*</span></label>
+                        <label for="routeTags">תגיות</label>
+
+                        <button type="button" id="addTagButton" class="-add-tag-button btn btn-outline-dark mx-1"
+                            style="font-size: 12px; padding: 2px 5px;">
+                            תגית חדשה
+                        </button>
+
                         <div id="routeTags" placeholder="הכנס תגיות">
                             <!-- All Tags -->
                         </div>
@@ -125,12 +133,52 @@
                         formTitle.text('ערוך אימון');
                         await fetchRouteData(routeId);
 
+                        $('#addTagButton').on('click', function () {
+                            const currentPath = window.location.pathname;
+
+                            if (!currentPath) {
+                                console.error('Current path is not defined.');
+                                return;
+                            }
+
+                            const from = encodeURIComponent(currentPath);
+                            const redirectPath = `/create-tags?from=${from}&id=${routeId}`;
+                            console.log(redirectPath)
+                            window.location.href = redirectPath;
+                        });
+
                         routeForm.on('submit', function (e) {
                             e.preventDefault();
                             updateRoute(routeId);
                         });
                     } else {
                         formTitle.text('הוסף אימון חדש');
+                        const newRouteData = JSON.parse(sessionStorage.getItem('newRouteData'));
+                        if (newRouteData)
+                            fetchNewRouteData(newRouteData);
+
+                        $('#addTagButton').on('click', function () {
+                            const newRoute = {
+                                name: $('#routeName').val(),
+                                description: $('#routeDescription').val(),
+                                distance: $('#routeDistance').val(),
+                                duration: $('#routeDuration').val(),
+                                tags: getSelectedTags()
+                            };
+                            sessionStorage.setItem('newRouteData', JSON.stringify(newRoute));
+
+                            const currentPath = window.location.pathname;
+
+                            if (!currentPath) {
+                                console.error('Current path is not defined.');
+                                return;
+                            }
+
+                            const from = encodeURIComponent(currentPath);
+                            const redirectPath = `/create-tags?from=${from}`;
+                            console.log(redirectPath)
+                            window.location.href = redirectPath;
+                        });
 
                         routeForm.on('submit', function (e) {
                             e.preventDefault();
@@ -138,6 +186,20 @@
                         });
                     }
                 });
+
+                function fetchNewRouteData(routeData) {
+                    $('#routeName').val(routeData.name);
+                    $('#routeDescription').val(routeData.description);
+
+                    $('#routeDistance').val(routeData.distance);
+                    $('#routeDuration').val(routeData.duration);
+
+                    if (routeData.tags) {
+                        routeData.tags.forEach(tagId => {
+                            $(`.tag-button[data-tag-id="${tagId._id}"]`).addClass('selected');
+                        });
+                    }
+                }
 
                 let places = [];
 
@@ -168,7 +230,6 @@
                         alert('There was an error fetching the route data. Please try again later.');
                     }
                 }
-
 
                 function getSelectedTags() {
                     let selectedTags = [];
@@ -209,6 +270,8 @@
                     };
 
                     sessionStorage.setItem('routeData', JSON.stringify(newRoute));
+                    sessionStorage.removeItem('newRouteData');
+
                     window.location.href = '/admin/add-new-route/places';
                 }
 

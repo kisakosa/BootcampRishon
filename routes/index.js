@@ -50,6 +50,16 @@ router.get('/edit-activity', auth, checkRole('admin'), async (req, res) => {
     return res.render('editActivity', { title: 'Edit Activity' });
 });
 
+// Feature 8
+router.get('/create-tags', auth, checkRole('admin'), async (req, res) => {
+    // const from = req.query.from; 
+    // const id = req.query.id;
+
+    // return res.render('createTags', { title: 'Create Tags', from, id });
+    return res.render('createTags', { title: 'Create Tags'});
+});
+
+
 // router.get('/customer', auth, checkRole('customer'), async (req, res) => {
 //     return res.render('customer', { title: 'Customer' });
 // });
