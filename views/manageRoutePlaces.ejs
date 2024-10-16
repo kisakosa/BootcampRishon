@@ -15,19 +15,33 @@
         #saveRouteBtn {
             margin: 15px auto;
             display: block;
-            padding: 15px 30px;
+            padding: 10px 20px;
             font-size: 18px;
-            background-color: gray;
+            background-color: #f8f9fa;
+            border: 1px solid black;
             color: black;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         #saveRouteBtn:hover {
             color: white;
             background-color: black;
             opacity: 80%;
+        }
+
+        .list-group-item {
+            border: none;
+            /* הסרת המסגרת */
+            margin-bottom: 10px;
+            /* הוספת רווח בין איברים */
+        }
+
+        .list-group-item .fa-map-marker-alt {
+            margin-left: 8px;
+            /* רווח בין האייקון לתוכן */
         }
     </style>
 
@@ -36,20 +50,28 @@
         <%- include('./partials/navbar', {currentPage: 'Manage Route / Places' }) %>
 
             <div class="container mt-5" style="max-width: 50%; margin: auto;">
-                <h3 class="text-center"> עדכון תחנות</h3>
+                <h1 class="text-center"> עדכון תחנות</h1>
 
-                <div class="form-group">
-                    <label for="routeName">שם המסלול</label>
-                    <input type="text" id="routeName" class="form-control" disabled>
+                <div class="form-group d-flex align-items-center mt-4">
+                    <label for="routeName" class="mb-0 ms-2">שם המסלול:</label>
+                    <div>
+                        <input type="text" id="routeName" class="form-control flex-grow-1" disabled>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>תחנות</label>
-                    <ul id="stationList" class="list-group">
-                        <!-- All Places -->
-                    </ul>
 
-                    <button id="addStationBtn" class="btn btn-outline-secondary mt-2">הוספת תחנה</button>
+                <div class="form-group">
+                    <label>תחנות:</label>
+                    <div id="stationList" class="list-group">
+                        <!-- All Places -->
+                    </div>
+
+                    <div class="list-group-item d-flex  text-secondary align-items-center mt-2">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <button id="addStationBtn" class="btn btn-outline-secondary me-4" aria-label="Add Station">
+                            הוספת תחנה
+                        </button>
+                    </div>
                 </div>
 
 
@@ -84,9 +106,9 @@
                         if (places.length > 0) {
                             places.forEach(place => {
                                 const listItem = `
-                                    <li class="list-group-item d-flex align-items-center" data-station-id="${place._id}">
-                                        <i class="fas fa-map-marker-alt" ms-4></i>
-                                        <span class="d-flex align-items-center  me-4">
+                                    <div class="list-group-item d-flex  align-items-center" data-station-id="${place._id}">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span class="d-flex align-items-center me-4">
                                             <span class="station-name d-flex align-items-center bg-light p-2 rounded">
                                                 ${place.name}
                                                 <button type="button" class="btn btn-outline-dark delete-btn me-4" aria-label="Remove station">
@@ -94,7 +116,7 @@
                                                 </button>
                                             </span>
                                         </span>
-                                    </li>                        
+                                    </div>                        
                                 `;
                                 placesList.append(listItem);
                             });
@@ -113,8 +135,8 @@
                         .then(response => response.json())
                         .then(data => {
                             const select = $('#stationSelect');
-                            select.empty(); 
-                            select.append('<option selected disabled>בחר תחנה</option>'); 
+                            select.empty();
+                            select.append('<option selected disabled>בחר תחנה</option>');
 
                             data.forEach(place => {
                                 select.append(`<option value="${place._id}">${place.name}</option>`);
@@ -128,8 +150,8 @@
                     const selectedStationName = $(this).find('option:selected').text();
 
                     $('#stationList').append(`
-                                <li class="list-group-item d-flex align-items-center" data-station-id="${selectedStationId}">
-                                    <i class="fas fa-map-marker-alt" ms-4></i>
+                                <div class="list-group-item d-flex  align-items-center" data-station-id="${selectedStationId}">
+                                    <i class="fas fa-map-marker-alt"></i>
                                     <span class="d-flex align-items-center  me-4">
                                         <span class="station-name d-flex align-items-center bg-light p-2 rounded">
                                             ${selectedStationName}
@@ -138,7 +160,7 @@
                                             </button>
                                         </span>
                                     </span>
-                                </li> 
+                                </div> 
                              `);
 
                     $(this).prop('selectedIndex', 0);
@@ -147,7 +169,7 @@
 
 
                 $('#stationList').on('click', '.delete-btn', function () {
-                    $(this).closest('li').remove();
+                    $(this).closest('div').remove();
                 });
 
                 $('#saveRouteBtn').on('click', async function () {

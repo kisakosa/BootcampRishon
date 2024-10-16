@@ -16,13 +16,15 @@
         #nextButton {
             margin: 15px auto;
             display: block;
-            padding: 15px 30px;
+            padding: 10px 20px;
             font-size: 18px;
-            background-color: gray;
+            background-color: #f8f9fa;
+            border: 1px solid black;
             color: black;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         #nextButton:hover {
@@ -42,13 +44,23 @@
             padding: 10px 0;
         }
 
-        .tag-button {
+        /* .tag-button {
             background-color: #f0f0f0;
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 5px 10px;
             margin-right: 10px;
             cursor: pointer;
+        }
+
+        .tag-button.selected {
+            background-color: black;
+            color: white;
+        } */
+
+        .tag-button {
+            margin: 5px;
+            background-color: #f8f9fa;
         }
 
         .tag-button.selected {
@@ -77,18 +89,20 @@
                     <label for="routeDistance">מרחק <span class="text-danger">*</span></label>
                     <div class="mb-3 input-group" style="direction: ltr;">
                         <span class="input-group-text">ק"מ</span>
-                        <input type="number" id="routeDistance" class="form-control" placeholder="הזן מרחק" min="0" step="0.1" aria-label="הזן מרחק" style="direction: rtl;">
+                        <input type="number" id="routeDistance" class="form-control" placeholder="הזן מרחק" min="0"
+                            step="0.1" aria-label="הזן מרחק" style="direction: rtl;">
                     </div>
-                    
+
                     <label for="routeDuration">זמן <span class="text-danger">*</span></label>
                     <div class="mb-3 input-group" style="direction: ltr;">
                         <span class="input-group-text">דקות</span>
-                        <input type="number" id="routeDuration" class="form-control" placeholder="הזן זמן" min="0" aria-label="הזן זמן" style="direction: rtl;">
+                        <input type="number" id="routeDuration" class="form-control" placeholder="הזן זמן" min="0"
+                            aria-label="הזן זמן" style="direction: rtl;">
                     </div>
-                    
-                   <div class="form-group">
-                        <label for="routeTags">תגים <span class="text-danger">*</span></label>
-                        <div id="routeTags" placeholder="הכנס תגים">
+
+                    <div class="form-group">
+                        <label for="routeTags">תגיות <span class="text-danger">*</span></label>
+                        <div id="routeTags" placeholder="הכנס תגיות">
                             <!-- All Tags -->
                         </div>
                     </div>
@@ -220,7 +234,7 @@
                                 <h5>${category.name}</h5>
                                 <div class="tags-list">
                                     ${tags.map(tag => `
-                                        <button type="button" class="tag-button" data-tag-id="${tag._id}">
+                                        <button type="button" class="tag-button btn btn-outline-dark mx-1" data-tag-id="${tag._id}">
                                             ${tag.name}
                                         </button>`).join('')}
                                 </div>
