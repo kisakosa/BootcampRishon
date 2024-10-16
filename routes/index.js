@@ -20,6 +20,7 @@ router.get('/register', async (req, res) => {
 });
 
 // Protected routes
+// Feature 6
 router.get('/admin', auth, checkRole('admin'), async (req, res) => {
     return res.render('admin', { title: 'Admin' });
 });
@@ -36,6 +37,17 @@ router.get('/admin/add-new-route/places', auth, checkRole('admin'), async (req, 
 });
 router.get('/admin/update-route/places', auth, checkRole('admin'), async (req, res) => {
     return res.render('manageRoutePlaces', { title: 'Update Route`s Places' });
+});
+
+// Feature 7
+router.get('/manage-activities', auth, checkRole('admin'), async (req, res) => {
+    return res.render('manageActivities', { title: 'Manage Activities' });
+});
+router.get('/add-new-activity', auth, checkRole('admin'), async (req, res) => {
+    return res.render('addActivity', { title: 'Add Activity' });
+});
+router.get('/edit-activity', auth, checkRole('admin'), async (req, res) => {
+    return res.render('editActivity', { title: 'Edit Activity' });
 });
 
 // router.get('/customer', auth, checkRole('customer'), async (req, res) => {
