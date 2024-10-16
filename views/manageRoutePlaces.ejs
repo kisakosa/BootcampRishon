@@ -12,6 +12,37 @@
             border: 1px solid #ccc;
         }
 
+        .list-group-item {
+            border: none;
+            margin-bottom: 10px;
+        }
+
+        .list-group-item .fa-map-marker-alt {
+            margin-left: 8px;
+        }
+
+        #stationResults {
+            width: 100%;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+        }
+
+        #stationResults .station-result {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        #stationResults .station-result:hover {
+            background-color: #f8f9fa;
+            /* Light grey on hover to indicate it's clickable */
+        }
+
+        #stationSearchInput {
+            cursor: pointer;
+        }
+
         #saveRouteBtn {
             margin: 15px auto;
             display: block;
@@ -32,19 +63,7 @@
             opacity: 80%;
         }
 
-        .list-group-item {
-            border: none;
-            /* הסרת המסגרת */
-            margin-bottom: 10px;
-            /* הוספת רווח בין איברים */
-        }
-
-        .list-group-item .fa-map-marker-alt {
-            margin-left: 8px;
-            /* רווח בין האייקון לתוכן */
-        }
     </style>
-
 
     <body>
         <%- include('./partials/navbar', {currentPage: 'Manage Route / Places' }) %>
@@ -74,10 +93,13 @@
                     </div>
                 </div>
 
+                <div class="form-group" id="stationSelect" style="display: none;">
+                    <input type="text" id="stationSearchInput" class="form-control mt-2" placeholder="הזן שם תחנה...">
 
-                <select id="stationSelect" class="form-select mt-2" style="display: none;">
-                    <!-- Dropdown (select) displaying all places -->
-                </select>
+                    <div id="stationResults" class="list-group mt-2" style="display: none;">
+                        <!-- Filtered stations will be dynamically added here -->
+                    </div>
+                </div>
 
                 <div class="text-center mt-4">
                     <button id="saveRouteBtn">שמירה</button>
@@ -130,24 +152,43 @@
                     });
                 });
 
+                let allStations = [];
+
                 function fetchStations() {
                     fetch('/api/v1/places/')
                         .then(response => response.json())
                         .then(data => {
-                            const select = $('#stationSelect');
-                            select.empty();
-                            select.append('<option selected disabled>בחר תחנה</option>');
-
-                            data.forEach(place => {
-                                select.append(`<option value="${place._id}">${place.name}</option>`);
-                            });
+                            allStations = data;
                         })
                         .catch(error => console.error('Error fetching stations:', error));
                 }
 
-                $('#stationSelect').on('change', function () {
-                    const selectedStationId = $(this).val();
-                    const selectedStationName = $(this).find('option:selected').text();
+                $('#stationSearchInput').on('input', function () {
+                    const searchValue = $(this).val().toLowerCase();
+                    const filteredStations = allStations.filter(station => station.name.toLowerCase().startsWith(searchValue));
+
+                    const stationResults = $('#stationResults');
+                    stationResults.empty();
+
+                    if (filteredStations.length > 0) {
+                        stationResults.show();
+
+                        filteredStations.forEach(station => {
+                            stationResults.append(`
+                <li class="list-group-item station-result" data-station-id="${station._id}">
+                    ${station.name}
+                </li>
+            `);
+                        });
+                    } else {
+                        stationResults.hide();
+                    }
+                });
+
+
+                $(document).on('click', '.station-result', function () {
+                    const selectedStationId = $(this).data('station-id');
+                    const selectedStationName = $(this).text();
 
                     $('#stationList').append(`
                                 <div class="list-group-item d-flex  align-items-center" data-station-id="${selectedStationId}">
@@ -163,8 +204,8 @@
                                 </div> 
                              `);
 
-                    $(this).prop('selectedIndex', 0);
-                    $(this).hide();
+                    $('#stationResults').hide();
+                    $('#stationSearchInput').val('');
                 });
 
 
