@@ -79,26 +79,23 @@
                         const areaName = areaTag ? areaTag.name : 'ראשון לציון';
 
                         const placesCount = route.places.length;
-                        const backgroundColorClass = route.isRelevant ? 'bg-light' : 'bg-dark text-white';
-
-                        const iconColor = route.isRelevant ? 'black' : 'white'; // צבע האייקונים
-                        const arrowColor = route.isRelevant ? 'black' : 'white'; // צבע החץ
+                        const backgroundColorClass = route.isRelevant ? 'bg-light' : 'bg-secondary';
 
                         const routeCard = `
                             <div class="route-card card p-3 mb-3 mx-auto ${backgroundColorClass}" style="border: 1px solid #ddd; width: 60%;">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center" style="flex-grow: 1;">
-                                        <button class="btn btn-link toggle-btn p-0" data-route-id="${route._id}" style="font-size: 24px; text-decoration: none; color: ${arrowColor};">▼</button>
+                                        <button class="btn btn-link toggle-btn p-0" data-route-id="${route._id}" style="font-size: 24px; text-decoration: none; color:black;">▼</button>
                                          <div class="text-center w-100">
                                             <h5 class="mb-1">${route.name}</h5>
                                             <p class="mb-0">${areaName} | ${placesCount} תחנות</p>
                                         </div>
                                     </div>
                                     <div class="route-actions text-right d-flex flex-column align-items-center">
-                                        <button class="btn btn-outline-dark mb-2" style="color: ${iconColor};border-color: ${iconColor};" onclick="window.location.href='/admin/update-route?id=${route._id}'">
+                                        <button class="btn btn-outline-primary mb-2" onclick="window.location.href='/admin/update-route?id=${route._id}'">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-outline-dark" style="color: ${iconColor}; border-color: ${iconColor};" onclick="updateRouteStatus('${route._id}')">
+                                        <button class="btn btn-outline-danger" onclick="updateRouteStatus('${route._id}')">
                                             ${route.isRelevant
                                 ? `<i class="fas fa-trash"></i>`
                                 : `<i class="fas fa-undo"></i>`
