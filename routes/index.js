@@ -10,6 +10,9 @@ router.get('/', async (req, res) => {
 router.get('/map', async (req, res) => {
     return res.render('mapScreen', { title: 'Map' });
 });
+router.get('/list', async (req, res) => {
+    return res.render('listView', { title: 'List' });
+});
 
 router.get('/login', async (req, res) => {
     return res.render('login', { title: 'login' });
