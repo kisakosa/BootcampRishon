@@ -7,13 +7,6 @@ router.get('/', async (req, res) => {
     return res.render('index', { title: 'Home' });
 });
 
-<<<<<<< Updated upstream
-router.get('/map', async (req, res) => {
-    return res.render('mapScreen', { title: 'Map' });
-});
-
-=======
->>>>>>> Stashed changes
 router.get('/login', async (req, res) => {
     return res.render('login', { title: 'login' });
 });
