@@ -78,50 +78,66 @@
     <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
     <script>
+        const ID = "67123caa24d5ef0a8ab8377c";
+
+        const PROTOCOL = window.location.protocol
+        const URL = `${PROTOCOL}/api/v1/routes/${ID}`
+
         // Initialize the map object
-        var map = L.map('map').setView([31.95966273043602, 34.80208048694831], 12); // Rishon coordinates
+        const map = L.map('map').setView([31.95966273043602, 34.80208048694831], 12); // Rishon coordinates
 
         // Setting map layer from OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        const fetchRoute = async () => {
+            try{
+                const response = await fetch(URL)
+                const data = await response.json()
+
+                return data
+            }catch(err){
+                throw new Error(err)
+                return {}
+            }
+        }
+
         // Fetching the route data from the API
-        async function addRouteToMap() {
-    const route = await fetchRoute();
+        const addRouteToMap = async() => {
+            const route = await fetchRoute();
 
-    if (!route || !route.places || route.places.length === 0) {
-        console.error("Invalid route data");
-        return;
-    }
+            if (!route || !route.places || route.places.length === 0) {
+                console.error("Invalid route data");
+                return;
+            }
 
-    const waypoints = []; // Create an array to hold all the coordinates
+            const waypoints = []; // Create an array to hold all the coordinates
 
-    
-    // Loop through each place to add markers and collect waypoints
-    route.places.forEach(place => {
-        const coordinates = [place.coordinates.latitude, place.coordinates.longitude]; // [latitude, longitude]
-        L.marker(coordinates).addTo(map).bindPopup(place.name); // Create a marker for each place
-        waypoints.push(L.latLng(coordinates)); // Add coordinates to the waypoints array
-    });
+            
+            // Loop through each place to add markers and collect waypoints
+            for(place of route.places){
+                const coordinates = [place.coordinates.latitude, place.coordinates.longitude]; // [latitude, longitude]
+                L.marker(coordinates).addTo(map).bindPopup(place.name); // Create a marker for each place
+                waypoints.push(L.latLng(coordinates)); // Add coordinates to the waypoints array
+            };
 
-    // Add a single routing control for all the waypoints
-    L.Routing.control({
-        waypoints: waypoints,
-        routeWhileDragging: false,
-        createMarker: function () {
-            return null;  // Prevent adding additional markers for waypoints
-        },
-        show: false,
-        draggableWaypoints: false
-    }).addTo(map);
-}
+            // Add a single routing control for all the waypoints
+            L.Routing.control({
+                waypoints: waypoints,
+                routeWhileDragging: false,
+                createMarker: function () {
+                    return null;  // Prevent adding additional markers for waypoints
+                },
+                show: false,
+                draggableWaypoints: false
+            }).addTo(map);
+        }
 
         addRouteToMap();
 
         // Event listener for the button to redirect to list view
         document.getElementById("toggleListView").addEventListener("click", function () {
-        
             window.location.href = "/list";  // Redirects to the list page
         });
     </script>
