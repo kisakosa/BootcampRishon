@@ -59,7 +59,6 @@
 
 <body>
     <!-- header -->
-
     <h1>שם האימון </h1>
 
     <div class="icons" style="align-self: flex-end;">
@@ -74,74 +73,57 @@
 
     <!-- JS of Leaflet -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
+    
     <!-- JS of Leaflet Routing Machine -->
     <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
     <script>
-        // יצירת אובייקט המפה ומיקוד לראשון לציון
-        var map = L.map('map').setView([31.95966273043602, 34.80208048694831], 12); // קואורדינטות של ראשון לציון
+        // Initialize the map object
+        var map = L.map('map').setView([31.95966273043602, 34.80208048694831], 12); // Rishon coordinates
 
-        // הגדרת שכבת המפה מ-OpenStreetMap
+        // Setting map layer from OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-
-        async function fetchRoute() {
-            try {
-                const response = await fetch(`http://localhost:8080/api/v1/routes/670668d770dec8da9fd0dc6d`);  // כאן תכניסי את כתובת ה-API הנכונה
-                const routeData = await response.json();  // קבלת נתוני המסלול בפורמט JSON
-                return routeData;
-            } catch (error) {
-                console.error("Error fetching route:", error);
-            }
-        }
-
+        // Fetching the route data from the API
         async function addRouteToMap() {
-            // שליפת נתוני המסלול מה-API
-            const route = await fetchRoute();
+    const route = await fetchRoute();
 
-            if (!route || !route.places || route.places.length < 2) {
-                console.error("Invalid route data");
-                return;
-            }
+    if (!route || !route.places || route.places.length === 0) {
+        console.error("Invalid route data");
+        return;
+    }
 
-            // קבלת קואורדינטות נקודות התחלה וסיום מתוך המסלול
-            const startCoordinates = [31.95966273043602, 34.80208048694831];  // החליפי לפי הנתונים מהמסלול
-            const endCoordinates = [31.995121254317752, 34.75107383504302];  // החליפי לפי הנתונים מהמסלול
+    const waypoints = []; // Create an array to hold all the coordinates
 
-            // הוספת נקודת התחלה במפה
-            var startMarker = L.marker(startCoordinates).addTo(map)
-                .bindPopup(route.places[0].name);
+    
+    // Loop through each place to add markers and collect waypoints
+    route.places.forEach(place => {
+        const coordinates = [place.coordinates.latitude, place.coordinates.longitude]; // [latitude, longitude]
+        L.marker(coordinates).addTo(map).bindPopup(place.name); // Create a marker for each place
+        waypoints.push(L.latLng(coordinates)); // Add coordinates to the waypoints array
+    });
 
-            // הוספת נקודת סיום במפה
-            var endMarker = L.marker(endCoordinates).addTo(map)
-                .bindPopup(route.places[route.places.length - 1].name);
+    // Add a single routing control for all the waypoints
+    L.Routing.control({
+        waypoints: waypoints,
+        routeWhileDragging: false,
+        createMarker: function () {
+            return null;  // Prevent adding additional markers for waypoints
+        },
+        show: false,
+        draggableWaypoints: false
+    }).addTo(map);
+}
 
-            // הוספת מסלול באמצעות Leaflet Routing Machine
-            L.Routing.control({
-                waypoints: [
-                    L.latLng(startCoordinates),  // נקודת התחלה
-                    L.latLng(endCoordinates)  // נקודת סיום 
-                ],
-                routeWhileDragging: false,
-                createMarker: function (i, waypoint, n) {
-                    return null;  // מחזיר null כדי שלא יתווסף סימן (marker)
-                },
-                show: false,
-                draggableWaypoints: false  // לא לאפשר לגרור נקודות
-            }).addTo(map);
-        }
+        addRouteToMap();
 
-        // קריאה לפונקציה להוספת המסלול למפה
-        addRouteToMap();  // יש להחליף את ה-ID של המסלול לפי הצורך
-
-        // הוספת סימון (marker) ב-Rishon StartUp
-        // var marker = L.marker([31.995121254317752, 34.75107383504302]).addTo(map)
-        //     .bindPopup('Rishon StartUp');
-        // .openPopup();
+        // Event listener for the button to redirect to list view
+        document.getElementById("toggleListView").addEventListener("click", function () {
+        
+            window.location.href = "/list";  // Redirects to the list page
+        });
     </script>
 </body>
-
 </html>
