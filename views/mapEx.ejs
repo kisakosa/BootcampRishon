@@ -87,41 +87,49 @@
         }).addTo(map);
 
         // Fetching the route data from the API
+        async function fetchRoute() {
+            try {
+                const response = await fetch(`http://localhost:8080/api/v1/routes/670668d770dec8da9fd0dc6d`);
+                const routeData = await response.json();
+                return routeData;
+            } catch (error) {
+                console.error("Error fetching route:", error);
+            }
+        }
+
+        // Add the fetched route to the map
         async function addRouteToMap() {
-    const route = await fetchRoute();
+            const route = await fetchRoute();
 
-    if (!route || !route.places || route.places.length === 0) {
-        console.error("Invalid route data");
-        return;
-    }
+            if (!route || !route.places || route.places.length < 2) {
+                console.error("Invalid route data");
+                return;
+            }
 
-    const waypoints = []; // Create an array to hold all the coordinates
+            const startCoordinates = [31.95966273043602, 34.80208048694831];
+            const endCoordinates = [31.995121254317752, 34.75107383504302];
 
-    
-    // Loop through each place to add markers and collect waypoints
-    route.places.forEach(place => {
-        const coordinates = [place.coordinates.latitude, place.coordinates.longitude]; // [latitude, longitude]
-        L.marker(coordinates).addTo(map).bindPopup(place.name); // Create a marker for each place
-        waypoints.push(L.latLng(coordinates)); // Add coordinates to the waypoints array
-    });
+            L.marker(startCoordinates).addTo(map).bindPopup(route.places[0].name);
+            L.marker(endCoordinates).addTo(map).bindPopup(route.places[route.places.length - 1].name);
 
-    // Add a single routing control for all the waypoints
-    L.Routing.control({
-        waypoints: waypoints,
-        routeWhileDragging: false,
-        createMarker: function () {
-            return null;  // Prevent adding additional markers for waypoints
-        },
-        show: false,
-        draggableWaypoints: false
-    }).addTo(map);
-}
+            L.Routing.control({
+                waypoints: [
+                    L.latLng(startCoordinates),
+                    L.latLng(endCoordinates)
+                ],
+                routeWhileDragging: false,
+                createMarker: function () {
+                    return null;  // Avoid adding additional markers
+                },
+                show: false,
+                draggableWaypoints: false
+            }).addTo(map);
+        }
 
         addRouteToMap();
 
         // Event listener for the button to redirect to list view
         document.getElementById("toggleListView").addEventListener("click", function () {
-        
             window.location.href = "/list";  // Redirects to the list page
         });
     </script>
