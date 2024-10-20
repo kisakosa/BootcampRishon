@@ -10,6 +10,7 @@
             align-items: center;
             justify-content: space-between;
             width: 310px;
+            margin:40px 0;
         }
         .card{
             text-align: center;
@@ -29,6 +30,7 @@
         .locationName{
             height: auto;
             font-size:150%;
+            font-weight: 400;
         }
     </style>
 </head>
@@ -57,6 +59,14 @@
             `
         }
 
+        const line = () =>{
+            return `
+                <div>
+                
+                </div>
+            `
+        }
+
         const placeDiv = (place) => {
             return `
                 <div class="place">
@@ -64,8 +74,9 @@
                         <h1 class="locationName">${place.name}</h1>
                     </div>
                     ${locationPin()}
-                </div> 
-            ` 
+                </div>
+                ${line()} 
+            `
         }
 
         const addToView = (data) => {
@@ -73,6 +84,9 @@
             descText.textContent = `Description: ${data.description}`
 
             for(const place of data.places){
+                placesDiv.innerHTML += placeDiv(place);        
+                placesDiv.innerHTML += placeDiv(place);        
+                placesDiv.innerHTML += placeDiv(place);        
                 placesDiv.innerHTML += placeDiv(place);        
             }
         }
