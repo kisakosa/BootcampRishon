@@ -74,9 +74,10 @@
             
         }
         .distanceText{
+            text-align: left;
             direction: rtl;
-            margin-left: 10px;
-            width: 50px;
+            margin-left: 20px;
+            width: 100px;
             font-size: 100%;
             font-weight: 400;
         }
@@ -120,7 +121,7 @@
         const placesDiv = document.getElementById("placeList")
         const back = document.getElementById("backButton")
 
-        const ID = "67123caa24d5ef0a8ab8377c";
+        const ID = "670f90813ad3b9ca711932c4";
 
         const PROTOCOL = window.location.protocol
         const URL = `${PROTOCOL}/api/v1/routes/${ID}`
@@ -133,28 +134,47 @@
             `
         }
 
-        function haversine(lat1, lon1, lat2, lon2) {
-            const R = 6371; // km 
-            //has a problem with the .toRad() method below.
-            const x1 = lat2 - lat1;
-            const dLat = x1.toRadians();  
-            const x2 = lon2 - lon1;
-            const dLon = x2.toRadians();  
-            var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
-                            Math.cos(lat1.toRadians()) * Math.cos(lat2.toRadians()) * 
-                            Math.sin(dLon/2) * Math.sin(dLon/2);  
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            var d = R * c; 
+        const toRadians = (degrees) => degrees * (Math.PI / 180);
 
+        const haversine = (lat1, lon1, lat2, lon2) => {
+            const R = 6371000;
+            
+            console.log(lat1, lon1)
+            console.log(lat2, lon2)
+
+            const x1 = lat2 - lat1;
+            const dLat = toRadians(x1);  
+            const x2 = lon2 - lon1;
+            const dLon = toRadians(x2);  
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+                            Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * 
+                            Math.sin(dLon/2) * Math.sin(dLon/2);  
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            const d = R * c; 
+
+            return d
         }
 
-        function formatDistance(distanceMeters) {
+        const formulateDistance = (distanceMeters) => {
             if (distanceMeters >= 1000) {
-                const km = (distanceMeters / 1000).toFixed(1); // Convert to kilometers and round to 1 decimal place
+                const km = (distanceMeters / 1000).toFixed(1);
                 return `${km} ק"מ`;
-            } else {
+            } else{ // if(distanceMeters >= 50) {
                 return `${Math.round(distanceMeters)} מ'`;
+            // }else{
+            //     return ""
             }
+        }
+
+        const getDistance = (place1, place2) => {
+            const lat1 = place1.coordinates.latitude
+            const lon1 = place1.coordinates.longitude
+
+            const lat2 = place2.coordinates.latitude
+            const lon2 = place2.coordinates.longitude
+            distance = haversine(lat1, lon1, lat2, lon2)
+            console.log(distance)
+            return formulateDistance(distance)
         }
 
         const line = (place1, place2) =>{
@@ -168,6 +188,7 @@
         }
 
         const placeDiv = (place, addLine, place2) => {
+            console.log(place2)
             return `
                 <div class="place">
                     <div class="card">
@@ -182,7 +203,8 @@
         const addToView = (data) => {
             nameText.textContent = data.name
 
-            for(const index in data.places){
+            for(let index in data.places){
+                index = parseInt(index)
                 const place = data.places[index]
 
                 placesDiv.innerHTML += placeDiv(place, index < data.places.length - 1, data.places[index + 1]);        
