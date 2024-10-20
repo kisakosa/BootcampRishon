@@ -14,6 +14,7 @@
 
             --grayColor: #dfdfdf;
             --lineColor: #babec6;
+            
         }
         .container{
             display:flex;
@@ -88,6 +89,14 @@
             margin-right: calc(0px - 1 * var(--pinSize));
             font-weight: 400;
         }
+        .button:hover{
+            background-color: hsl(0, 0%, 50%);
+            color:white;
+        }
+        .button{
+            margin-top: 80px;
+            width:200px
+        }
     </style>
 </head>
 <body>
@@ -100,10 +109,10 @@
         <div class="places">
             <h1 class="placeHeader">תחנות</h1>
             <div id="placeList"></div>
-            <button id="backButton" class="card button">
-                <h1 class="textInside">חזרה למפה</h1>
-            </button>
         </div>
+        <button id="backButton" class="card button">
+            <h1 class="textInside">חזרה למפה</h1>
+        </button>
     </div>
 
     <script>
@@ -152,9 +161,6 @@
             for(const index in data.places){
                 const place = data.places[index]
 
-                // placesDiv.innerHTML += placeDiv(place, true);        
-                // placesDiv.innerHTML += placeDiv(place, true);        
-                // placesDiv.innerHTML += placeDiv(place, true);        
                 placesDiv.innerHTML += placeDiv(place, index < data.places.length - 1);        
             }
         }
@@ -175,7 +181,6 @@
 
         back.addEventListener("click", () => {
             window.location.href = "/map"
-
         })
     </script>
 </body>
