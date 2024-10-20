@@ -133,24 +133,48 @@
             `
         }
 
-        const line = () =>{
+        function haversine(lat1, lon1, lat2, lon2) {
+            const R = 6371; // km 
+            //has a problem with the .toRad() method below.
+            const x1 = lat2 - lat1;
+            const dLat = x1.toRadians();  
+            const x2 = lon2 - lon1;
+            const dLon = x2.toRadians();  
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+                            Math.cos(lat1.toRadians()) * Math.cos(lat2.toRadians()) * 
+                            Math.sin(dLon/2) * Math.sin(dLon/2);  
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            var d = R * c; 
+
+        }
+
+        function formatDistance(distanceMeters) {
+            if (distanceMeters >= 1000) {
+                const km = (distanceMeters / 1000).toFixed(1); // Convert to kilometers and round to 1 decimal place
+                return `${km} ק"מ`;
+            } else {
+                return `${Math.round(distanceMeters)} מ'`;
+            }
+        }
+
+        const line = (place1, place2) =>{
             return `
                 <div class="linecontainer">
                     <div class="line"></div>
-                    <h1 class="distanceText"> </h1>
+                    <h1 class="distanceText">${getDistance(place1, place2)}</h1>
                 </div>
 
             `
         }
 
-        const placeDiv = (place, addLine) => {
+        const placeDiv = (place, addLine, place2) => {
             return `
                 <div class="place">
                     <div class="card">
                         <h1 class="textInside">${place.name}</h1>
                     </div>
                     ${locationPin()}
-                    ${addLine ? line() : ""} 
+                    ${addLine ? line(place, place2) : ""} 
                 </div>
             `
         }
@@ -161,7 +185,7 @@
             for(const index in data.places){
                 const place = data.places[index]
 
-                placesDiv.innerHTML += placeDiv(place, index < data.places.length - 1);        
+                placesDiv.innerHTML += placeDiv(place, index < data.places.length - 1, data.places[index + 1]);        
             }
         }
 
