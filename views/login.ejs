@@ -11,8 +11,11 @@
             <h1>Login page</h1>
             <h1>Welcome back!</h1>
         </div>
-        <form id="loginForm">
-            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        <div id="message" class="message"></div>
+        <form id="loginForm" action="/api/v1/auth/login" method="POST">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="example@example.com" required>
+            <label for="password">Password:</label>
             <input type="password" id="password" name="password" placeholder="Enter your password" required>
             <button type="submit">Done</button>
         </form>
@@ -22,6 +25,8 @@
             event.preventDefault(); // Prevent form submission
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const messageElement = document.getElementById('message');
+
             try {
                 const response = await fetch('/api/v1/auth/login', {
                     method: 'POST',
@@ -30,26 +35,25 @@
                     },
                     body: JSON.stringify({ email, password })
                 });
+
                 if (!response.ok) {
                     const errorData = await response.json();
+                    messageElement.textContent = `Login failed: ${errorData.error}`;
+                    messageElement.classList.add('error');
                     console.error('Login failed:', errorData.error);
                     return;
                 }
+
                 const data = await response.json();
                 console.log('Login successful:', data);
-                // Optionally, redirect to another page here
+                // Redirect to welcome.ejs
+                window.location.href = '/welcome'; // Adjust the URL based on your routing
             } catch (error) {
                 console.error('Error:', error.message);
+                messageElement.textContent = `Error: ${error.message}`;
+                messageElement.classList.add('error');
             }
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
