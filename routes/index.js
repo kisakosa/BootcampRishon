@@ -7,6 +7,10 @@ router.get('/', async (req, res) => {
     return res.render('index', { title: 'Home' });
 });
 
+router.get('/chooseRoute', async (req, res) => {
+    return res.render('chooseRoute', { title: 'chooseRoute' });
+});
+
 router.get('/map', async (req, res) => {
     return res.render('mapScreen', { title: 'Map' });
 });
