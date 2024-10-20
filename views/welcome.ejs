@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('./partials/head') %>
+
+<body>
+    <%- include('./partials/navbar', { currentPage: 'welcome' }) %>
+    <div class="container">
+        <h1>Welcome, <%= user.name %>!</h1>
+        <p>You have successfully registered. You can now start using the application.</p>
+        <a href="/login">Login</a>
+    </div>
+</body>
+</html>
