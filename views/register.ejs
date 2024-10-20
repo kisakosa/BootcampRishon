@@ -30,20 +30,20 @@
             <label>סיסמה</label><br>
             <input type="password" name="password" class="password" required><br>
 
-            <p>כבר נרשמתה?<a href="/login"> התחברות</a></p>
+            <p>כבר נרשמתה?<a href="/views/login.ejs"> התחברות</a></p>
             <button type="submit" class="SubmitButton">הרשמה</button>
         </form>
     </div>
 
     <script>
-        document.getElementById('registrationForm').addEventListener('submit', async function (e) {
-            e.preventDefault(); // Prevent default form submission
+        document.getElementById('registrationForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
 
-            const formData = new FormData(this);
+            const formData = new FormData(event.target);
             const data = Object.fromEntries(formData.entries());
 
             try {
-                const response = await fetch(this.action, {
+                const response = await fetch(event.target.action, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -54,14 +54,15 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    // Redirect to welcome.ejs on successful registration
-                    window.location.href = '/welcome';
+                    // Redirect to the welcome page
+                    window.location.href = '/welcome'; // Adjust the URL as necessary
                 } else {
-                    alert(result.message); // Display error message
+                    // Handle errors
+                    alert(result.message || 'An error occurred during registration.');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred during registration. Please try again.');
+                alert('An unexpected error occurred.');
             }
         });
     </script>
