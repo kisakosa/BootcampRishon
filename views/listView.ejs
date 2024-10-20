@@ -4,32 +4,88 @@
 <%- include('./partials/head') %>
 <head>
     <style>
+        :root {
+            --pinSize: 35px;
+            --cardSpacing: 40px;
+            --cardHeight: 60px;
+
+            --lineContainerWidth: 100px;
+            --placeListWidth: 310px;
+
+            --grayColor: #dfdfdf;
+            --lineColor: #babec6;
+        }
+        .container{
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
         .place{
+            position:relative;
             display:flex;
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            width: 310px;
-            margin:40px 0;
+            width: 100%;
+            margin-bottom: var(--cardSpacing);
+            margin-top: 20px;
+        }
+        .linecontainer{
+            width:var(--lineContainerWidth);
+            position:absolute;
+            top:calc(50% + var(--pinSize)/2);
+            left:calc(100% - var(--pinSize)/2 - 1.5px);
+            display:flex;
+            flex-direction: row;
+            align-items: center;
+            height: calc(var(--cardSpacing) + var(--cardHeight) - var(--pinSize));
+        }
+        .line{
+            width:3px;
+            background-color: var(--lineColor);
+            height: 100%;
         }
         .card{
             text-align: center;
             display:flex;
             justify-content: center;
             align-content:center;
-            width: 250px;
-            height: 50px;
+            align-items:center;
+            width: calc(var(--placeListWidth) - 60px);
+            height: var(--cardHeight);
             border-radius: 20px;
-            background-color: #bababa;
-            padding: 5px 0;
+            background-color: var(--grayColor);
+            padding: 5px 5px;
         }
         .locationPin{
-            width: 35px;
-            height: 100%;
+            width: calc(var(--pinSize) + );
+            height: var(--pinSize);
+            z-index: 2;
         }
-        .locationName{
-            height: auto;
-            font-size:150%;
+        .textInside{
+            width:90%;
+            height:auto;
+            text-align: center;
+            font-size:1.4em;
+            font-weight: 500;
+            margin: 0;
+            
+        }
+        .distanceText{
+            direction: rtl;
+            margin-left: 10px;
+            width: 50px;
+            font-size: 100%;
+            font-weight: 400;
+        }
+        .places{
+            width:var(--placeListWidth)
+        }
+        .placeHeader{
+            direction: rtl;
+            font-size: 1.5em;
+            margin-right: calc(0px - 1 * var(--pinSize));
             font-weight: 400;
         }
     </style>
@@ -38,18 +94,27 @@
     <%- include('./partials/navbar', {currentPage: 'list view'}) %>
 
     <div class="container">
-        <h1>View List</h1>
+        <br><br>
         <h1 id="name"></h1>
-        <p id="desc"></p>
 
-        <h1> PLACES: </h1>
-        <div id="places"></div>
+        <div class="places">
+            <h1 class="placeHeader">תחנות</h1>
+            <div id="placeList"></div>
+            <button id="backButton" class="card button">
+                <h1 class="textInside">חזרה למפה</h1>
+            </button>
+        </div>
     </div>
 
     <script>
         const nameText = document.getElementById("name")
-        const descText = document.getElementById("desc")
-        const placesDiv = document.getElementById("places")
+        const placesDiv = document.getElementById("placeList")
+        const back = document.getElementById("backButton")
+
+        const ID = "67123caa24d5ef0a8ab8377c";
+
+        const PROTOCOL = window.location.protocol
+        const URL = `${PROTOCOL}/api/v1/routes/${ID}`
 
         const locationPin = () => {
             return `
@@ -61,40 +126,44 @@
 
         const line = () =>{
             return `
-                <div>
-                
+                <div class="linecontainer">
+                    <div class="line"></div>
+                    <h1 class="distanceText"> </h1>
                 </div>
+
             `
         }
 
-        const placeDiv = (place) => {
+        const placeDiv = (place, addLine) => {
             return `
                 <div class="place">
                     <div class="card">
-                        <h1 class="locationName">${place.name}</h1>
+                        <h1 class="textInside">${place.name}</h1>
                     </div>
                     ${locationPin()}
+                    ${addLine ? line() : ""} 
                 </div>
-                ${line()} 
             `
         }
 
         const addToView = (data) => {
-            nameText.textContent = `Name: ${data.name}`
-            descText.textContent = `Description: ${data.description}`
+            nameText.textContent = data.name
 
-            for(const place of data.places){
-                placesDiv.innerHTML += placeDiv(place);        
-                placesDiv.innerHTML += placeDiv(place);        
-                placesDiv.innerHTML += placeDiv(place);        
-                placesDiv.innerHTML += placeDiv(place);        
+            for(const index in data.places){
+                const place = data.places[index]
+
+                // placesDiv.innerHTML += placeDiv(place, true);        
+                // placesDiv.innerHTML += placeDiv(place, true);        
+                // placesDiv.innerHTML += placeDiv(place, true);        
+                placesDiv.innerHTML += placeDiv(place, index < data.places.length - 1);        
             }
         }
 
-        const fetchPlace = async (id) => {
+        const fetchPlace = async () => {
             try{
-                const response = await fetch(`http://localhost:8080/api/v1/routes/${id}`)
+                const response = await fetch(URL)
                 const data = await response.json()
+
                 return data
             }catch(err){
                 throw new Error(err)
@@ -102,8 +171,12 @@
             }
         }
 
-        const id = "671223f924d5ef0a8ab8373b";
-        fetchPlace(id).then(addToView)
+        fetchPlace().then(addToView)
+
+        back.addEventListener("click", () => {
+            window.location.href = "/map"
+
+        })
     </script>
 </body>
 </html>
