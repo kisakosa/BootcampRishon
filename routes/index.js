@@ -22,6 +22,14 @@ router.get('/register', async (req, res) => {
     return res.render('register', { title: 'register' });
 });
 
+// Feature 3
+router.get('/map', async (req, res) => {
+    return res.render('mapScreen', { title: 'Map' });
+});
+router.get('/list', async (req, res) => {
+    return res.render('listView', { title: 'List' });
+});
+
 // Protected routes
 // Feature 6
 router.get('/admin', auth, checkRole('admin'), async (req, res) => {
@@ -55,11 +63,7 @@ router.get('/edit-activity', auth, checkRole('admin'), async (req, res) => {
 
 // Feature 8
 router.get('/create-tags', auth, checkRole('admin'), async (req, res) => {
-    // const from = req.query.from; 
-    // const id = req.query.id;
-
-    // return res.render('createTags', { title: 'Create Tags', from, id });
-    return res.render('createTags', { title: 'Create Tags'});
+    return res.render('createTags', { title: 'Create Tags' });
 });
 
 
