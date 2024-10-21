@@ -1,23 +1,26 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <%- include('./partials/head') %>
 <head>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="/css/register.css">
 </head>
 <body>
     <%- include('./partials/navbar', { currentPage: 'login' }) %>
-    <div class="container" id="main">
-        <div>
+    <div class="cardplace" id="main">
+        <div class = "nicetomeetyou">
             <h1>Login page</h1>
             <h1>Welcome back!</h1>
         </div>
         <div id="message" class="message"></div>
-        <form id="loginForm" action="/api/v1/auth/login" method="POST">
+        <form id="loginForm" action="/api/v1/auth/login" method="POST" class="card">
+            <button type="button" class="x">x</button>
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="example@example.com" required>
+            <input type="email" class="Email" name="email" id="email" placeholder="example@example.com" required>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            <button type="submit">Done</button>
+            <input type="password" class="password" name="password" id="password" placeholder="Enter your password" required>
+            <button type="submit" class = SubmitButton >Done</button>
         </form>
     </div>
     <script>
@@ -26,7 +29,6 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const messageElement = document.getElementById('message');
-
             try {
                 const response = await fetch('/api/v1/auth/login', {
                     method: 'POST',
@@ -35,7 +37,6 @@
                     },
                     body: JSON.stringify({ email, password })
                 });
-
                 if (!response.ok) {
                     const errorData = await response.json();
                     messageElement.textContent = `Login failed: ${errorData.error}`;
@@ -43,7 +44,6 @@
                     console.error('Login failed:', errorData.error);
                     return;
                 }
-
                 const data = await response.json();
                 console.log('Login successful:', data);
                 // Redirect to welcome.ejs

@@ -19,20 +19,56 @@
 </head>
 <body>
     <%- include('./partials/navbar', {currentPage: 'register'}) %>
-
     <div class="cardplace">
-        <form class="card">
+        <form class="card" action="/register" method="POST" id="registerForm">
             <h1 class="nicetomeetyou">!נעים להכיר</h1>
             <button type="button" class="x">x</button>
-            <label>שם</label><br>
-            <input type="text" class="UserName" required><br>
-            <label>דוא"ל</label><br>
-            <input type="email" class="Email" required><br>
-            <label>סיסמה</label><br>
-            <input type="password" class="password" required><br>
-
+            <label for="UserName">שם</label><br>
+            <input type="text" class="UserName" name="name" id="UserName" required><br>
+            <label for="Email">דוא"ל</label><br>
+            <input type="email" class="Email" name="email" id="Email" required><br>
+            <label for="password">סיסמה</label><br>
+            <input type="password" class="password" name="password" id="password" required><br>
             <p>כבר נרשמת?<a href="/login"> התחברות</a></p>
-            <button type="submit" class="SubmitButton" required>התחברות</button>
+            <button type="submit" class="SubmitButton">התחברות</button>
         </form>
     </div>
+    
+    <!-- JavaScript handler embedded in the EJS -->
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+    
+            const name = document.getElementById('UserName').value;
+            const email = document.getElementById('Email').value;
+            const password = document.getElementById('password').value;
+    
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+                });
+    
+                if (response.ok) {
+                    alert("הצלחה");
+                    window.location.href = '/welcome';
+                } else {
+                    const errorMsg = await response.text();
+                    alert(errorMsg);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Something went wrong. Please try again later.');
+            }
+        });
+    </script>
+    
+
 </body>

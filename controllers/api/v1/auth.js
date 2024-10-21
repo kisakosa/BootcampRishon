@@ -7,24 +7,24 @@ const asyncHandler = require('../../../utils/asyncHandler'); // Adjust the path 
 exports.register = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
-        return res.status(400).send('name, email, and password are required.');
+        return res.status(400).json({ status: 'error', message: 'name, email, and password are required.' });
     }
 
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
-        return res.status(400).send('Invalid email format.');
+        return res.status(400).json({ status: 'error', message: 'Invalid email format.' });
     }
 
     let user = await User.findOne({ email });
     if (user) {
-        return res.status(400).send('User already registered.');
+        return res.status(400).json({ status: 'error', message: 'User already registered.' });
     }
 
-    user = new User({ name, email, password, role: 'user' });
+    const saltRounds = 10; // Adjust as needed
+    user = new User({ name, email, password: await bcrypt.hash(password, saltRounds), role: 'user' });
     await user.save();
 
     const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
     const httpOnly = process.env.HTTP_ONLY === 'true';
 
     res.cookie('authToken', token, { 
@@ -37,8 +37,9 @@ exports.register = asyncHandler(async (req, res) => {
     res.render('welcome', {
         user: { name: user.name, email: user.email }
     });
-
 });
+
+
 
 // Login a user
 exports.login = asyncHandler(async (req, res) => {
