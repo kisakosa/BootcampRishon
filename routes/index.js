@@ -13,6 +13,10 @@ router.get('/login', async (req, res) => {
     return res.render('login', { title: 'login' });
 });
 
+router.get('/welcome', async (req, res) => {
+    return res.render('welcome', { title: 'welcome' });
+});
+
 router.get('/register', async (req, res) => {
     return res.render('register', { title: 'register' });
 });
