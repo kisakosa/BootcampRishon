@@ -158,7 +158,7 @@
                             }
 
                             const from = encodeURIComponent(currentPath);
-                            const redirectPath = `/create-tags?from=${from}&id=${activityId}`;
+                            const redirectPath = `/admin/create-tags?from=${from}&id=${activityId}`;
                             console.log(redirectPath)
                             window.location.href = redirectPath; // העבר לעמוד create-tags
                         });
@@ -274,9 +274,6 @@
                     // append place description to form-data
                     fd.append('description', $('#activityDescription').val());
 
-                    // append place image url to form-data
-                    fd.append('img', $('#activityImg').val());
-
                     // append place youtube url to form-data
                     fd.append('youtube', $('#activityYT').val());
 
@@ -311,8 +308,7 @@
                         processData: false,
                         data: fd,
                         success: function () {
-                            console.log(updatedActivity)
-                            window.location.href = '/manage-activities';
+                            window.location.href = '/admin/manage-activities';
                         },
                         error: function (xhr, status, error) {
                             console.error(`Error updating activity: ${xhr.responseText || status}`);
