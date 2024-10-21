@@ -1,12 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<%- include('./partials/head') %>
-
+<head>
+    <link rel="stylesheet" href="register.css">
+    <%- include('./partials/head') %>
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="ejs" href="/views/login.ejs">
+    <style>
+        body {
+            background-image: src('ריאשון.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
 <body>
     <%- include('./partials/navbar', {currentPage: 'register'}) %>
-    <div class="container">
-        <h1>Register page</h1>
+
+    <div class="cardplace">
+        <form class="card">
+            <h1 class="nicetomeetyou">!נעים להכיר</h1>
+            <button type="button" class="x">x</button>
+            <label>שם</label><br>
+            <input type="text" class="UserName" required><br>
+            <label>דוא"ל</label><br>
+            <input type="email" class="Email" required><br>
+            <label>סיסמה</label><br>
+            <input type="password" class="password" required><br>
+
+            <p>כבר נרשמת?<a href="/views/login.ejs"> התחברות</a></p>
+            <button type="submit" class="SubmitButton" required>התחברות</button>
+        </form>
     </div>
 </body>
-</html>
