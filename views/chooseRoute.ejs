@@ -1,7 +1,18 @@
 <%- include('./partials/head') %>
 
 <%- include('./partials/navbar', { currentPage: 'register' }) %>
+<head>
+    <style>
+        * {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+            }
 
+            *::-webkit-scrollbar {
+            background-color: transparent;
+            }
+    </style>
+</head>
 <body onload="init()">
     <header>
         <div class="container">
@@ -38,6 +49,7 @@
             </div>
         </div>
 
+        
         <!-- Suggestions section -->
         <div class="container">
             <h2 class="text-end">הצעות בשבילך</h2>
@@ -47,39 +59,145 @@
         </div>
     </main>
 
+    <script>
+        // Function to initialize the page and fetch data
+        const init = () => {
+            fetchData();
+        }
+
+        // Function to fetch data from the API
+        const fetchData = () => {
+            fetch('/api/v1/routes')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Assuming the response is JSON
+                })
+                .then(data => {
+                    populateStrength(data); // Call the function to populate strength data
+                    Bike(data);
+                    Recomend(data);
+                    console.log(data); // Check the fetched data in the console
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+        }
+
+        // Function to populate the strength section
+        const populateStrength = (data) => {
+            const strengthContainer = document.getElementById('strength');
+            strengthContainer.innerHTML = ''; // Clear previous content
+            
+            // Filter data for strength training
+            const strengthWorkouts = data.filter(item => 
+                item.tags.some(tag => tag.name === "אימון כוח")
+            );
+            
+            // Create and append elements for each strength workout
+            if (strengthWorkouts.length > 0) {
+                strengthContainer.style.display = 'flex'; // Use flexbox for layout
+                strengthContainer.style.flexWrap = 'nowrap'; // Prevent wrapping
+                strengthContainer.style.overflowX = 'auto'; // Allow horizontal scrolling
+                strengthContainer.style.scrollbarWidth = 'thin'; // Optional: for Firefox to adjust scrollbar width
+                x=1
+                
+                strengthWorkouts.forEach(workout => {
+                    h = " אימון "+x+" ";
+                    const workoutDiv = document.createElement('div');
+                    workoutDiv.classList.add('card', 'd-flex'); // Add classes for styling
+                    workoutDiv.style.width = '200px'; // Set card width
+                    workoutDiv.style.height = '80px'; // Set card height
+                    workoutDiv.style.overflow = 'hidden'; // Ensure overflow is hidden
+                    workoutDiv.style.margin = '20px'; // Margin around cards
+                    workoutDiv.innerText =h+ workout.name; // Set the workout name
+                    
+                    strengthContainer.appendChild(workoutDiv); // Append to the container
+                    x=x+1;
+                });
+            } else {
+                strengthContainer.innerText = 'אין אימוני כח זמינים.'; // Message for no workouts
+            }
+        };
+
+        
+        //bike
+        // Function to populate the strength section
+        const Bike = (data) => {
+            const bikeContainer = document.getElementById('bicycle');
+            bikeContainer.innerHTML = ''; // Clear previous content
+            
+            // Filter data for bike routes
+            const bikeWorkouts = data.filter(item => 
+                item.tags.some(tag => tag.name.trim() === "מסלול אופניים")
+            );
+            console.log(bikeWorkouts);
+            // Create and append elements for each bike workout
+            if (bikeWorkouts.length > 0) {
+                bikeContainer.style.display = 'flex'; // Use flexbox for layout
+                bikeContainer.style.flexWrap = 'nowrap'; // Prevent wrapping
+                bikeContainer.style.overflowX = 'auto'; // Allow horizontal scrolling
+                bikeContainer.style.scrollbarWidth = 'thin'; // Optional: for Firefox to adjust scrollbar width
+                
+                let x = 1;
+                
+                bikeWorkouts.forEach(workout => {
+                    const h = " אימון " + x + " ";
+                    const workoutDiv = document.createElement('div');
+                    workoutDiv.classList.add('card', 'd-flex'); // Add classes for styling
+                    workoutDiv.style.width = '200px'; // Set card width
+                    workoutDiv.style.height = '80px'; // Set card height
+                    workoutDiv.style.overflow = 'hidden'; // Ensure overflow is hidden
+                    workoutDiv.style.margin = '20px'; // Margin around cards
+                    workoutDiv.innerText = h + workout.name; // Set the workout name
+                    
+                    bikeContainer.appendChild(workoutDiv); // Append to the container
+                    x++;
+                });
+                
+            } else {
+                bikeContainer.innerText = 'אין מסלולי אופניים זמינים.'; // Message for no routes
+            }
+        };
+
+        const Recomend = (data) => {
+            const recomendcontainer = document.getElementById('suggestions');
+            recomendcontainer.innerHTML = ''; // Clear previous content
+            
+            // Filter data for bike routes
+            const recomendWorkouts = data;
+            console.log(recomendWorkouts)
+            // Create and append elements for each bike workout
+            if (recomendWorkouts.length > 0) {
+                recomendcontainer.style.display = 'flex'; // Use flexbox for layout
+                recomendcontainer.style.flexWrap = 'nowrap'; // Prevent wrapping
+                recomendcontainer.style.overflowX = 'auto'; // Allow horizontal scrolling
+                recomendcontainer.style.scrollbarWidth = 'thin'; // Optional: for Firefox to adjust scrollbar width
+                
+                let x = 1;
+                
+                recomendWorkouts.forEach(workout => {
+                    const h = " אימון " + x + " ";
+                    const workoutDiv = document.createElement('div');
+                    workoutDiv.classList.add('card', 'd-flex'); // Add classes for styling
+                    workoutDiv.style.width = '200px'; // Set card width
+                    workoutDiv.style.height = '80px'; // Set card height
+                    workoutDiv.style.overflow = 'hidden'; // Ensure overflow is hidden
+                    workoutDiv.style.margin = '20px'; // Margin around cards
+                    workoutDiv.innerText = h + workout.name; // Set the workout name
+                    
+                    recomendcontainer.appendChild(workoutDiv); // Append to the container
+                    x++;
+                });
+                
+            } else {
+                recomendcontainer.innerText = '.אין מסלולים מומלצים בשביל'; // Message for no routes
+            }
+        };
+
+        // Call init function when the page loads
+        window.onload = init;
+    </script>
 </body>
-
-<script>
-    // Function to initialize the page and fetch data
-    const init = () => {
-        fetchData();
-    }
-
-
-    // Function to fetch data from the API
-    const fetchData = () => {
-        fetch('/api/v1/routes')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json(); // Assuming the response is JSON
-            })
-            .then(data => {
-                // populateStrength(data); // Call the function to populate strength data
-                // populateBicycle(data);
-                // populateSuggestions(data);
-                console.log(data)
-            })
-            .catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
-    }
-
-  
-
-    // Call init function when the page loads
-    window.onload = init;
-</script>
-
 </html>
