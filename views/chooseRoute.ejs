@@ -1,0 +1,256 @@
+<%- include('./partials/head') %>
+
+    <%- include('./partials/navbar', { currentPage: 'register' }) %>
+        <style>
+
+
+            .x:hover {
+                background: silver;
+                transition: 500ms;
+            }
+
+            #allTagsSection {
+
+                 direction: ltr; 
+
+                display: none;
+                /* Initially hidden */
+                overflow-x: scroll;
+                height: 100px;
+
+                /* Set initial height to 0 */
+                opacity: 0;
+                /* Set initial opacity to 0 */
+                transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+                /* Smooth transition */
+            }
+
+            #allTagsSection.show {
+         
+                display: block;
+                max-height: 1000px;
+                /* Max height large enough to contain the content */
+                opacity: 1;
+                /* Fully visible */
+            }
+        </style>
+
+        <body onload="init()">
+            <header>
+                <div class="container">
+                    <h1 class=" text-center">כל האימונים</h1>
+                </div>
+            </header>
+            <main>
+                <div class="container mt-5">
+                    <form onsubmit="handleSubmit(event)" class="w-50 mx-auto d-flex justify-content-center">
+                        <i class="bi bi-list fs-1" id="toggleTags" style="cursor: pointer;"></i>
+                        <div class="input-group">
+                            <div class="input-group">
+                                <span class="input-group-text" id="search-icon">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input id="inputId" type="text" class="form-control" placeholder="Search..."
+                                    aria-label="Search" aria-describedby="search-icon">
+                            </div>
+                    </form>
+                </div>
+                <!-- AllTags partial will be hidden initially -->
+                <div id="allTagsSection" style="display: none;">
+                    <%- include('./partials/allTags', { currentPage: 'register' }) %>
+                </div>
+
+                <!-- Bicycle training section -->
+                <div id="all">
+
+
+                    <div class="container">
+                        <h2 class="text-end">אימונים עם אפניים</h2>
+                        <div id="bicycle" class="row justify-content-s flex-row-reverse text-end">
+                            <!-- Bicycle training content will be dynamically inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Strength training section -->
+                    <div class="container">
+                        <h2 class="text-end">אימוני כח</h2>
+                        <div id="strength" class="row justify-content-s flex-row-reverse text-end">
+                            <!-- Strength training content will be dynamically inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Suggestions section -->
+                    <div class="container">
+                        <h2 class="text-end">הצעות בשבילך</h2>
+                        <div id="suggestions" class="row justify-content-s flex-row-reverse text-end">
+                            <!-- Suggestions content will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+        </body>
+
+        <script>
+            // Function to initialize the page and fetch data
+            const init = () => {
+                fetchData();
+                setupTagToggle();
+            }
+
+            // Set up the click event to toggle the visibility of the allTags section
+            const setupTagToggle = () => {
+                const toggleIcon = document.getElementById('toggleTags');
+                const allTagsSection = document.getElementById('allTagsSection');
+
+                toggleIcon.addEventListener('click', () => {
+                    if (allTagsSection.classList.contains('show')) {
+                        allTagsSection.classList.remove('show');  // Hide the allTags section
+                        setTimeout(() => allTagsSection.style.display = 'none', 500); // Wait for animation to complete before hiding
+                    } else {
+                        allTagsSection.style.display = 'block'; // Show the allTags section
+                        setTimeout(() => allTagsSection.classList.add('show'), 10); // Allow display to apply before starting transition
+                    }
+                });
+            }
+
+            let allData = []; // Store the data globally
+            const handleSubmit = (e) => {
+                e.preventDefault(); // Prevent form submission
+                populateBySearch();
+                const allContainer = document.getElementById('all');
+                allContainer.classList = "row justify-content-s flex-row-reverse text-end"
+
+            }
+
+            // Get search input value and filter the data
+            const populateBySearch = () => {
+                const searchValue = document.querySelector("#inputId").value.toLowerCase();
+                const allContainer = document.getElementById('all');
+                allContainer.innerHTML = ''; // Clear previous results
+
+                const searchTrainings = allData.filter(training => training.name.toLowerCase().includes(searchValue)); // Filter by search
+
+                // Display the filtered results
+                searchTrainings.forEach((training, index) => {
+                    const div = document.createElement('div');
+                    div.style.cursor = "pointer"
+                    div.onclick = () => {
+                        window.location.href = `/map/${training._id}`;
+                    };
+                    div.className = ' col-4 p-3'; // Add Bootstrap column and padding classes
+                    div.innerHTML = `
+                <div class="card x">
+                    <div class="card-body">
+                        <h5 class="card-title">אימון ${index + 1}</h5>
+                        <p class="card-text">${training.name}</p>
+                    </div>
+                </div>
+            `;
+                    allContainer.appendChild(div); // Add the newly created div to the DOM
+                });
+            }
+
+
+            // Function to fetch data from the API
+            const fetchData = () => {
+                fetch('/api/v1/routes')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); // Assuming the response is JSON
+                    })
+                    .then(data => {
+                        populateStrength(data); // Call the function to populate strength data
+                        populateBicycle(data);
+                        populateSuggestions(data);
+                        allData = data;
+                        console.log(data)
+
+                    })
+                    .catch(error => {
+                        console.error('There has been a problem with your fetch operation:', error);
+                    });
+            }
+
+            // Populate Strength section with "כח" related data
+            const populateStrength = (data) => {
+                const strengthContainer = document.getElementById('strength');
+                const strengthTrainings = data.filter(training => training.name.includes("כח") && !training.name.includes("אופניים")); // Filter only strength training
+
+                strengthTrainings.slice(0, 3).forEach((training, index) => {
+                    const div = document.createElement('div');
+                    div.style.cursor = "pointer"
+                    div.onclick = () => {
+                        window.location.href = `/map/${training._id}`;
+                    };
+                    div.className = 'col-4 p-3'; // Add Bootstrap column and padding classes
+                    div.innerHTML = `
+                <div class="card x">
+                    <div class="card-body">
+                        <h5 class="card-title">אימון ${index + 1}</h5>
+                        <p class="card-text">${training.name}</p>
+                    </div>
+                </div>
+            `;
+                    strengthContainer.appendChild(div); // Add the newly created div to the DOM
+                });
+            }
+
+            // Populate Bicycle section with "אפניים" related data
+            const populateBicycle = (data) => {
+                const bicycleContainer = document.getElementById('bicycle');
+                const bicycleTrainings = data.filter(training => training.name.includes("אופניים")); // Filter only bicycle training
+
+                bicycleTrainings.forEach((training, index) => {
+                    const div = document.createElement('div');
+                    div.style.cursor = "pointer"
+                    div.onclick = () => {
+                        window.location.href = `/map/${training._id}`;
+                    };
+                    div.className = 'col-4 p-3'; // Add Bootstrap column and padding classes
+                    div.innerHTML = `
+                <div class="card x">
+                    <div class="card-body">
+                        <h5 class="card-title">אימון ${index + 1}</h5>
+                        <p class="card-text">${training.name}</p>
+                    </div>
+                </div>
+            `;
+                    bicycleContainer.appendChild(div); // Add the newly created div to the DOM
+                });
+            }
+
+            // Populate Suggestions section
+            const populateSuggestions = (data) => {
+                const suggestionsContainer = document.getElementById('suggestions');
+                const suggestionTrainings = data
+
+                suggestionTrainings.slice(0, 3).forEach((training, index) => {
+                    const div = document.createElement('div');
+                    div.style.cursor = "pointer"
+
+                    div.onclick = () => {
+                        window.location.href = `/map/${training._id}`;
+                    };
+                    div.className = 'col-4 p-3'; // Add Bootstrap column and padding classes
+                    div.innerHTML = `
+                <div class="card x">
+                    <div class="card-body">
+                        <h5 class="card-title">אימון ${index + 1}</h5>
+                        <p class="card-text">${training.name}</p>
+                    </div>
+                </div>
+            `;
+                    suggestionsContainer.appendChild(div); // Add the newly created div to the DOM
+                });
+            }
+
+            // Call init function when the page loads
+            window.onload = init;
+        </script>
+
+
+
+        </html>
