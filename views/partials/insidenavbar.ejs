@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Navigation Bar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* General body styling */
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif; /* Default font */
+            background-color: rgb(240, 240, 240); /* Light background */
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
+            display: flex;
+            flex-direction: column; /* Stack children vertically */
+            justify-content: flex-start; /* Align elements at the top */
+        }
+        /* Top menu styling */
+        .topmenu {
+            background-color: #000000; /* Dark background */
+            padding: 10px 20px; /* Add padding */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            color: white;
+            display: flex; /* Align top menu items with flexbox */
+            justify-content: space-between; /* Distribute space between items */
+            align-items: center; /* Center items vertically */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Add shadow */
+        }
+        .logo {
+            height: 50px; /* Logo height */
+            margin-right: 20px; /* Space between logo and username */
+        }
+        .username {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            margin-right: 50px; /* Increased space to the right of the username */
+        }
+        /* Navbar styling */
+        .navbar {
+            background-color: #222; /* Darker background for navbar */
+            width: 100%; /* Full width */
+            height: 60px; /* Fixed height */
+            padding: 0 20px; /* Side padding */
+            display: flex; /* Use flexbox for the navbar */
+            align-items: center; /* Center vertically */
+            position: fixed; /* Fixed positioning to keep it at the bottom */
+            bottom: 0; /* Stick to the bottom */
+            z-index: 1000; /* Ensure it's on top of other elements */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Add shadow */
+        }
+        .nav__link {
+            display: flex;
+            align-items: center; /* Center items vertically */
+            margin-right: 20px; /* Space between items */
+            color: #FFFFFF; /* White text color */
+            text-decoration: none; /* Remove underline */
+            transition: color 0.3s; /* Smooth color transition */
+        }
+        .nav__link:hover {
+            color: #FFCC00; /* Change color on hover */
+        }
+        i {
+            font-size: 24px; /* Icon size */
+        }
+        /* Add margin-left: auto to push the account icon to the right */
+        .nav__link.account {
+            margin-left:1090px; /* Push to the right */
+        }
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 10px; /* Less padding on smaller screens */
+            }
+            .nav__link {
+                margin-right: 10px; /* Less space between buttons */
+            }
+            .username {
+                font-size: 14px; /* Smaller username font size */
+            }
+            i {
+                font-size: 20px; /* Smaller icon size */
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 0 5px; /* Adjust padding */
+            }
+            .logo {
+                height: 35px; /* Smaller logo */
+            }
+            .username {
+                font-size: 12px; /* Smaller username font size */
+            }
+            i {
+                font-size: 18px; /* Smaller icon size */
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="topmenu">
+    <img src="https://i.postimg.cc/cLx3kVnz/Rishon-Fit.png" class="logo" alt="logo">
+    <h2 class="username">שם משתמש</h2>
+</div>
+<div class="navbar">
+    <a href="/chooseRoute" class="nav__link">
+        <img src="https://i.postimg.cc/FK3CTCDm/Rishon-Fit-1.png" alt="logo" width="35" height="35">
+    </a>
+    <a href="#" class="nav__link" aria-label="Search">
+        <i class="fas fa-search"></i>
+    </a>
+    <a href="#" class="nav__link account" aria-label="Account">
+        <i class="fas fa-user-circle"></i>
+    </a>
+</div>
+</body>
+</html>
