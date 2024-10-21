@@ -2,16 +2,19 @@
 
     <%- include('./partials/navbar', { currentPage: 'register' }) %>
         <style>
+        
             .x:hover {
                 background: silver;
                 transition: 500ms;
             }
 
             #allTagsSection {
+            
                 display: none;
                 /* Initially hidden */
-                overflow: hidden;
-                max-height: 0;
+                overflow-x: scroll;
+                height: 100px;
+
                 /* Set initial height to 0 */
                 opacity: 0;
                 /* Set initial opacity to 0 */
@@ -20,6 +23,7 @@
             }
 
             #allTagsSection.show {
+         
                 display: block;
                 max-height: 1000px;
                 /* Max height large enough to contain the content */
