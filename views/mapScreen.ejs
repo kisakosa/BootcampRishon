@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<%- include('./partials/head') %>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Map Screen</title>
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <!-- CSS of Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
@@ -20,54 +18,79 @@
         }
 
         #map {
-            height: 500px;
-            width: 70%;
+            height: 350px;
+            width: 100%;
             margin: 0 auto;
         }
 
         .icons {
-            width: 35%;
-            margin: 8px;
+            width: 100%;
+            text-align: right;
         }
-
+        .mapicons{
+            width:40%
+        }
         i {
             font-size: 24px;
             margin: 0 4px;
             cursor: pointer;
         }
 
-        #toggleListView {
-            margin: 15px auto;
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #f8f9fa;
-            border: 1px solid black;
-            color: black;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        .textInside{
+            width:90%;
+            height:auto;
+            text-align: center;
+            font-size:1.4em;
+            font-weight: 500;
+            margin: 0;
+            color:white;
         }
-
-        #toggleListView:hover {
-            color: white;
-            background-color: black;
-            opacity: 80%;
+        .button:hover{
+            background-color: hsl(19, 88%, 45%);
+            color:white;
+        }
+        .button{
+            margin-top: 20px;
+            margin-bottom: 20px;
+            width:200px;
+            height: 60px;
+            background-color: #f16624;
+            border-radius: 20px;
+            padding: 5px 5px;
+            text-align: center;
+            border:none
+        }
+        .center{
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-content:center;
+            align-items:center;
         }
     </style>
 </head>
 
 <body>
+    <%- include('./partials/navbar', {currentPage: 'List View'}) %>
+
     <!-- header -->
-    <h1>שם האימון </h1>
+    <br>
+    <h1 id="name" class="nametxt">שם האימון </h1>
 
-    <div class="icons" style="align-self: flex-end;">
-        <i class="fa fa-share-alt" aria-hidden="true"></i>
-        <i class="far fa-star" aria-hidden="true"></i>
+    <div class="center">
+        <div class="mapicons">
+            <div class="icons" style="align-self: flex-end;">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+                <i class="far fa-star" aria-hidden="true"></i>
+            </div>
+        
+            <div id="map"></div>
+        </div>
+
+        <button id="toggleListView" class="button center">
+            <h1 class="textInside">הצגה ברשימה</h1>
+        </button>
     </div>
-
-    <div id="map"></div>
-    <button id="toggleListView" onclick="window.location.href='http://localhost:8080/list/'">הצגה ברשימה</button>
 
     <!-- footer -->
 
@@ -78,18 +101,31 @@
     <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
     <script>
-        const ID = "67123caa24d5ef0a8ab8377c";
+        const nameText = document.getElementById("name")
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        const ID = urlParams.get("id");
 
         const PROTOCOL = window.location.protocol
         const URL = `${PROTOCOL}/api/v1/routes/${ID}`
 
-        // Initialize the map object
-        const map = L.map('map').setView([31.95966273043602, 34.80208048694831], 12); // Rishon coordinates
+        const getCenter = (coords) => {
+            if (!coords.length) return null;
 
-        // Setting map layer from OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+            let totalLat = 0;
+            let totalLng = 0;
+
+            for(coord of coords){
+                totalLat += coord[0];
+                totalLng += coord[1];
+            }
+
+            const centerLat = totalLat / coords.length;
+            const centerLng = totalLng / coords.length;
+
+            return [centerLat, centerLng]
+        }
 
         const fetchRoute = async () => {
             try{
@@ -103,6 +139,14 @@
             }
         }
 
+        // Initialize the map object
+        const map = L.map('map') 
+
+        // Setting map layer from OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
         // Fetching the route data from the API
         const addRouteToMap = async() => {
             const route = await fetchRoute();
@@ -112,15 +156,19 @@
                 return;
             }
 
-            const waypoints = []; // Create an array to hold all the coordinates
+            nameText.textContent = route.name;
 
-            
+            const waypoints = []; // Create an array to hold all the coordinates
+            const coordsFinal = []
             // Loop through each place to add markers and collect waypoints
             for(place of route.places){
                 const coordinates = [place.coordinates.latitude, place.coordinates.longitude]; // [latitude, longitude]
                 L.marker(coordinates).addTo(map).bindPopup(place.name); // Create a marker for each place
                 waypoints.push(L.latLng(coordinates)); // Add coordinates to the waypoints array
+                coordsFinal.push(coordinates)
             };
+
+            map.setView(getCenter(coordsFinal), 12);
 
             // Add a single routing control for all the waypoints
             L.Routing.control({
@@ -138,7 +186,7 @@
 
         // Event listener for the button to redirect to list view
         document.getElementById("toggleListView").addEventListener("click", function () {
-            window.location.href = "/list";  // Redirects to the list page
+            window.location.href = `/list?id=${ID}`;  // Redirects to the list page
         });
     </script>
 </body>
