@@ -2,7 +2,9 @@
 
     <%- include('./partials/navbar', { currentPage: 'register' }) %>
         <style>
-
+            body{
+                color: #f16624;
+            }
 
             .x:hover {
                 background: silver;
@@ -33,6 +35,17 @@
                 opacity: 1;
                 /* Fully visible */
             }
+            input[type=text]{
+  width: 80%;
+  padding: 12px 30px;
+  box-sizing: border-box;
+  border: none;
+  background-color: #CCCCCC;
+  color: black;
+  margin: auto;
+  margin-top:0%;
+}
+
         </style>
 
         <body onload="init()">
@@ -250,7 +263,3 @@
             // Call init function when the page loads
             window.onload = init;
         </script>
-
-
-
-        </html>

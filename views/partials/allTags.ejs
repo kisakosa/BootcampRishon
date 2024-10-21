@@ -2,6 +2,10 @@
     <!-- Buttons will be dynamically inserted here -->
 </div>
 
+<style>
+
+</style>
+
 <script>
     const fetchData2 = () => {
         fetch('/api/v1/tags')
@@ -14,7 +18,8 @@
                     const button = document.createElement('button'); // Create a new button element
                     button.textContent = tag.name; // Set the button text to the tag name
                     button.style.height="60px";
-                    button.classList.add('btn', 'btn-secondary', 'm-2','col-2'); // Optionally, add Bootstrap classes for styling
+              
+                    button.classList.add('btn', 'btn-dark', 'm-2','col-4'); // Optionally, add Bootstrap classes for styling
                     button.onclick = () => {
                         alert(`Tag selected: ${tag.name}`);
                         // You can replace this with any action you want to trigger on button click
