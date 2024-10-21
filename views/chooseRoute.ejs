@@ -1,12 +1,33 @@
 <%- include('./partials/head') %>
 
     <%- include('./partials/navbar', { currentPage: 'register' }) %>
-<style>
-    .x:hover{
-        background: silver;
-        transition: 500ms;
-    }
-</style>
+        <style>
+            .x:hover {
+                background: silver;
+                transition: 500ms;
+            }
+
+            #allTagsSection {
+                display: none;
+                /* Initially hidden */
+                overflow: hidden;
+                max-height: 0;
+                /* Set initial height to 0 */
+                opacity: 0;
+                /* Set initial opacity to 0 */
+                transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+                /* Smooth transition */
+            }
+
+            #allTagsSection.show {
+                display: block;
+                max-height: 1000px;
+                /* Max height large enough to contain the content */
+                opacity: 1;
+                /* Fully visible */
+            }
+        </style>
+
         <body onload="init()">
             <header>
                 <div class="container">
@@ -16,15 +37,20 @@
             <main>
                 <div class="container mt-5">
                     <form onsubmit="handleSubmit(event)" class="w-50 mx-auto d-flex justify-content-center">
-                        <i class="bi bi-list fs-1"></i>
+                        <i class="bi bi-list fs-1" id="toggleTags" style="cursor: pointer;"></i>
                         <div class="input-group">
-                            <span class="input-group-text" id="search-icon">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input id="inputId" type="text" class="form-control" placeholder="Search..."
-                                aria-label="Search" aria-describedby="search-icon">
-                        </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="search-icon">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input id="inputId" type="text" class="form-control" placeholder="Search..."
+                                    aria-label="Search" aria-describedby="search-icon">
+                            </div>
                     </form>
+                </div>
+                <!-- AllTags partial will be hidden initially -->
+                <div id="allTagsSection" style="display: none;">
+                    <%- include('./partials/allTags', { currentPage: 'register' }) %>
                 </div>
 
                 <!-- Bicycle training section -->
@@ -62,7 +88,25 @@
             // Function to initialize the page and fetch data
             const init = () => {
                 fetchData();
+                setupTagToggle();
             }
+
+            // Set up the click event to toggle the visibility of the allTags section
+            const setupTagToggle = () => {
+                const toggleIcon = document.getElementById('toggleTags');
+                const allTagsSection = document.getElementById('allTagsSection');
+
+                toggleIcon.addEventListener('click', () => {
+                    if (allTagsSection.classList.contains('show')) {
+                        allTagsSection.classList.remove('show');  // Hide the allTags section
+                        setTimeout(() => allTagsSection.style.display = 'none', 500); // Wait for animation to complete before hiding
+                    } else {
+                        allTagsSection.style.display = 'block'; // Show the allTags section
+                        setTimeout(() => allTagsSection.classList.add('show'), 10); // Allow display to apply before starting transition
+                    }
+                });
+            }
+
             let allData = []; // Store the data globally
             const handleSubmit = (e) => {
                 e.preventDefault(); // Prevent form submission
@@ -83,7 +127,7 @@
                 // Display the filtered results
                 searchTrainings.forEach((training, index) => {
                     const div = document.createElement('div');
-                    div.style.cursor="pointer"
+                    div.style.cursor = "pointer"
                     div.onclick = () => {
                         window.location.href = `/map/${training._id}`;
                     };
@@ -130,7 +174,7 @@
 
                 strengthTrainings.slice(0, 3).forEach((training, index) => {
                     const div = document.createElement('div');
-                    div.style.cursor="pointer"
+                    div.style.cursor = "pointer"
                     div.onclick = () => {
                         window.location.href = `/map/${training._id}`;
                     };
@@ -154,7 +198,7 @@
 
                 bicycleTrainings.forEach((training, index) => {
                     const div = document.createElement('div');
-                    div.style.cursor="pointer"
+                    div.style.cursor = "pointer"
                     div.onclick = () => {
                         window.location.href = `/map/${training._id}`;
                     };
@@ -178,8 +222,8 @@
 
                 suggestionTrainings.slice(0, 3).forEach((training, index) => {
                     const div = document.createElement('div');
-                    div.style.cursor="pointer"
-                
+                    div.style.cursor = "pointer"
+
                     div.onclick = () => {
                         window.location.href = `/map/${training._id}`;
                     };
