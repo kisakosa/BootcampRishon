@@ -39,8 +39,10 @@
         #toggleListView {
             margin: 15px auto;
             padding: 10px 20px;
-            font-size: 18px;
-            background-color: #f8f9fa;
+            font-size: 1.4em;
+            width: 250px;
+            height: 60px;
+            background-color: #dadada;
             border: 1px solid black;
             color: black;
             border: none;
@@ -67,7 +69,7 @@
     </div>
 
     <div id="map"></div>
-    <button id="toggleListView" onclick="window.location.href='http://localhost:8080/list/'">הצגה ברשימה</button>
+    <button id="toggleListView">הצגה ברשימה</button>
 
     <!-- footer -->
 
@@ -131,7 +133,7 @@
                 },
                 show: false,
                 draggableWaypoints: false
-            }).addTo(map);
+            }).addTo(map).on("routingError", (err) => console.log(err));
         }
 
         addRouteToMap();
