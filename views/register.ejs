@@ -1,38 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link rel="stylesheet" href="register.css">
     <%- include('./partials/head') %>
-    <link rel="stylesheet" href="/css/register.css">
-    <!-- <link rel="ejs" href="/views/login.ejs"> -->
-    <style>
-        body {
-            background-image: src('ריאשון.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-    </style>
+        <link rel="stylesheet" href="/css/register.css">
+        <!-- <link rel="ejs" href="/views/login.ejs"> -->
+        <style>
+            body {
+                background-image: src('ריאשון.png');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+        </style>
 </head>
+
 <body>
-    <%- include('./partials/navbar', {currentPage: 'register'}) %>
+    <%- include('./partials/navbar', {currentPage: 'register' }) %>
 
-    <div class="cardplace">
-        <form class="card">
-            <h1 class="nicetomeetyou">!נעים להכיר</h1>
-            <button type="button" class="x">x</button>
-            <label>שם</label><br>
-            <input type="text" class="UserName" required><br>
-            <label>דוא"ל</label><br>
-            <input type="email" class="Email" required><br>
-            <label>סיסמה</label><br>
-            <input type="password" class="password" required><br>
+        <div class="cardplace">
+            <form class="card">
+                <h1 class="nicetomeetyou">!נעים להכיר</h1>
+                <button type="button" class="x">x</button>
+                <label>שם</label><br>
+                <input type="text" class="UserName" required><br>
+                <label>דוא"ל</label><br>
+                <input type="email" class="Email" required><br>
+                <label>סיסמה</label><br>
+                <input type="password" class="password" required><br>
 
-            <p>כבר נרשמת?<a href="/login"> התחברות</a></p>
-            <button type="submit" class="SubmitButton" required>התחברות</button>
-        </form>
-    </div>
+                <p>כבר נרשמת?<a href="/login"> התחברות</a></p>
+                <button onclick="SendData()" type="submit" class="SubmitButton" required>התחברות</button>
+            </form>
+        </div>
+        <script>
+
+            function SendData() {
+                
+                event.preventDefault()
+                const userName = document.querySelector('.UserName').value;
+                const email = document.querySelector('.Email').value;
+                const password = document.querySelector('.password').value;
+
+
+                const PROTOCOL = window.location.protocol
+                const URL = `/api/v1/users`
+                fetch(URL, {
+                    method: 'POST',
+                    headers: {
+                    "Content-Type": 'application/json',
+                    Accept:"application/json",
+                },
+                    body: JSON.stringify({
+                        name: userName,
+                        email: email,
+                        role: "user",
+                        password: password,
+                        savedRoutes: [],
+                    })
+                }).then(response=>console.log(response))
+            }; 
+        </script>
 </body>
