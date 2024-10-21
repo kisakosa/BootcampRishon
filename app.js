@@ -51,6 +51,7 @@ app.use('/uploads', express.static('uploads'));
 
 // Import and use routes
 app.use('/', require('./routes/index'));
+app.use('/admin', require('./routes/indexAdmin'));
 app.use('/templates', require('./routes/templates'));
 app.use('/api/v1/routes', require('./routes/api/v1/route'));
 app.use('/api/v1/auth', require('./routes/api/v1/auth'));

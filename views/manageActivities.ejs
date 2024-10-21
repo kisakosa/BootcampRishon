@@ -149,7 +149,7 @@
                     <!-- הצגת התחנות -->
                 </div>
 
-                <button id="addPlaceBtn" onclick="window.location.href='/add-new-activity'"> הוספת תחנה</button>
+                <button id="addPlaceBtn" onclick="window.location.href='/admin/add-new-activity'"> הוספת תחנה</button>
 
             </div>
 
@@ -167,13 +167,13 @@
                         const response = await fetch('/api/v1/categories/search?name=סוג מתקן');
                         const categories = await response.json();
 
-                        const categoryId = categories[0]._id; 
+                        const categoryId = categories[0]._id;
                         if (categoryId) {
                             const tagsResponse = await fetch(`/api/v1/tags/category/${categoryId}`);
                             const tags = await tagsResponse.json();
 
                             const tagsContainer = $('#tagsContainer');
-                            tagsContainer.empty(); 
+                            tagsContainer.empty();
                             tags.forEach(tag => {
                                 const button = $(`<button class="tag-button btn btn-outline-dark mx-1" data-tag-id="${tag._id}">${tag.name}</button>`);
 
@@ -201,7 +201,7 @@
                 }
 
                 $('#searchInput').on('input', function () {
-                    fetchAndFilterPlaces(); 
+                    fetchAndFilterPlaces();
                 });
 
                 async function fetchAndFilterPlaces() {
@@ -215,15 +215,15 @@
                         const searchQuery = $('#searchInput').val().toLowerCase();
 
                         if (selectedTags.length === 0 && searchQuery === '') {
-                            displayPlaces(places); 
+                            displayPlaces(places);
                             return;
                         }
 
                         const filteredPlaces = places.filter(place => {
-                            const matchesTag = selectedTags.length === 0 || place.tags.some(tag => selectedTags.includes(tag._id)); 
-                            const matchesSearch = searchQuery === "" || place.name.toLowerCase().startsWith(searchQuery); 
+                            const matchesTag = selectedTags.length === 0 || place.tags.some(tag => selectedTags.includes(tag._id));
+                            const matchesSearch = searchQuery === "" || place.name.toLowerCase().startsWith(searchQuery);
 
-                            return matchesTag && matchesSearch; 
+                            return matchesTag && matchesSearch;
                         });
 
                         displayPlaces(filteredPlaces);
@@ -236,19 +236,33 @@
                     const groupedPlaces = {};
 
                     places.forEach(place => {
-                        place.tags.forEach(tag => {
-                            if (!groupedPlaces[tag.name]) {
-                                groupedPlaces[tag.name] = []; 
+                        //     place.tags.forEach(tag => {
+                        //         if (!groupedPlaces[tag.name]) {
+                        //             groupedPlaces[tag.name] = [];
+                        //         }
+                        //         groupedPlaces[tag.name].push(place);
+                        //     });
+                        if (place.tags.length === 0) {
+                            if (!groupedPlaces['תחנות נוספות']) {
+                                groupedPlaces['תחנות נוספות'] = [];
                             }
-                            groupedPlaces[tag.name].push(place); 
-                        });
+                            groupedPlaces['תחנות נוספות'].push(place);
+                        } else {
+                            place.tags.forEach(tag => {
+                                if (!groupedPlaces[tag.name]) {
+                                    groupedPlaces[tag.name] = [];
+                                }
+                                groupedPlaces[tag.name].push(place);
+                            });
+                        }
+
                     });
 
-
-                    const container = $('#placesContainer'); 
-                    container.empty(); 
-
-                    for (const tag in groupedPlaces) {
+                    const container = $('#placesContainer');
+                    container.empty();
+                    const sortedTags = Object.keys(groupedPlaces).sort((a, b) => a.localeCompare(b));
+                    sortedTags.forEach(tag => {
+                    // for (const tag in groupedPlaces) {
                         const tagHeader = $('<h5>').text(tag);
                         container.append(tagHeader);
 
@@ -258,17 +272,16 @@
                             const placeCard = $(`
                                 <div class="place-card">
                                     <h6>${place.name}</h6>
-                                    <button class="edit-button btn btn-outline-dark mb-2" onclick="window.location.href= '/edit-activity?id=${place._id}'">
+                                    <button class="edit-button btn btn-outline-dark mb-2" onclick="window.location.href= '/admin/edit-activity?id=${place._id}'">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
                                 </div>
                             `);
 
-            
                             placesContainer.append(placeCard);
                         });
                         container.append(placesContainer);
-                    }
+                    })
                 }
 
             </script>
