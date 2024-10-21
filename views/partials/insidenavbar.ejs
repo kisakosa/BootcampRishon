@@ -29,18 +29,19 @@
             z-index: 1000;
             color: white;
             display: flex; /* Align top menu items with flexbox */
-            justify-content: flex-end; /* Align items to the right */
+            justify-content: space-between; /* Distribute space between items */
+            align-items: center; /* Center items vertically */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Add shadow */
         }
         .logo {
             height: 50px; /* Logo height */
-            margin-right: 100px; /* Reduced space between logo and username */
+            margin-right: 20px; /* Space between logo and username */
         }
         .username {
             font-size: 16px;
             font-weight: bold;
             color: white;
-            margin-right: 5px; /* Reduced space to the right of the username */
+            margin-right: 50px; /* Increased space to the right of the username */
         }
         /* Navbar styling */
         .navbar {
@@ -68,6 +69,10 @@
         }
         i {
             font-size: 24px; /* Icon size */
+        }
+        /* Add margin-left: auto to push the account icon to the right */
+        .nav__link.account {
+            margin-left:1090px; /* Push to the right */
         }
         /* Responsive styles */
         @media (max-width: 768px) {
@@ -102,8 +107,8 @@
 </head>
 <body>
 <div class="topmenu">
-    <h2 class="username">שם משתמש</h2>
     <img src="https://i.postimg.cc/cLx3kVnz/Rishon-Fit.png" class="logo" alt="logo">
+    <h2 class="username">שם משתמש</h2>
 </div>
 <div class="navbar">
     <a href="#" class="nav__link">
@@ -112,7 +117,7 @@
     <a href="#" class="nav__link" aria-label="Search">
         <i class="fas fa-search"></i>
     </a>
-    <a href="#" class="nav__link" aria-label="Account">
+    <a href="#" class="nav__link account" aria-label="Account">
         <i class="fas fa-user-circle"></i>
     </a>
 </div>
