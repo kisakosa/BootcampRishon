@@ -32,10 +32,12 @@ exports.register = asyncHandler(async (req, res) => {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 3600000 // 1 hour
-    }).send({
-        message: 'Registration successful.',
-        user: { name: user.name, email: user.email, role: user.role }
     });
+
+    res.render('welcome', {
+        user: { name: user.name, email: user.email }
+    });
+
 });
 
 // Login a user
