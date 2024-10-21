@@ -1,0 +1,29 @@
+<div class="col-6 mx-auto row justify-content-s flex-row-reverse text-end" id="tagContainer"> 
+    <!-- Buttons will be dynamically inserted here -->
+</div>
+
+<script>
+    const fetchData2 = () => {
+        fetch('/api/v1/tags')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('tagContainer'); // Get the container div
+                container.innerHTML = ''; // Clear the container before adding new content
+
+                data.forEach(tag => {
+                    const button = document.createElement('button'); // Create a new button element
+                    button.textContent = tag.name; // Set the button text to the tag name
+                    button.classList.add('btn', 'btn-secondary', 'm-2','col-2'); // Optionally, add Bootstrap classes for styling
+                    button.onclick = () => {
+                        alert(`Tag selected: ${tag.name}`);
+                        // You can replace this with any action you want to trigger on button click
+                    };
+                    container.appendChild(button); // Append the button to the container
+                });
+            })
+            .catch(error => console.error('Error fetching tags:', error));
+    }
+
+    // Call fetchData when the script runs
+    fetchData2();
+</script>
