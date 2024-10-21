@@ -2,36 +2,31 @@ const User = require('../../../models/User'); // Import the User model
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('../../../utils/asyncHandler'); // Adjust the path as needed
+
 // Register a new user
 exports.register = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
-
-    // Check if all fields are provided
     if (!name || !email || !password) {
-        return res.status(400).json({ message: 'Name, email, and password are required.' });
+        return res.status(400).json({ status: 'error', message: 'name, email, and password are required.' });
     }
 
-    // Validate the email format
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
-        return res.status(400).json({ message: 'Invalid email format.' });
+        return res.status(400).json({ status: 'error', message: 'Invalid email format.' });
     }
 
-    // Check if the user already exists
     let user = await User.findOne({ email });
     if (user) {
-        return res.status(400).json({ message: 'User already registered.' });
+        return res.status(400).json({ status: 'error', message: 'User already registered.' });
     }
 
-    // Create a new user
-    user = new User({ name, email, password, role: 'user' });
+    const saltRounds = 10; // Adjust as needed
+    user = new User({ name, email, password: await bcrypt.hash(password, saltRounds), role: 'user' });
     await user.save();
 
-    // Generate JWT token
     const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    // Set cookie options
     const httpOnly = process.env.HTTP_ONLY === 'true';
+
     res.cookie('authToken', token, { 
         httpOnly: httpOnly,
         secure: process.env.NODE_ENV === 'production',
@@ -39,16 +34,11 @@ exports.register = asyncHandler(async (req, res) => {
         maxAge: 3600000 // 1 hour
     });
 
-    // Return a success response
-    return res.status(201).json({
-        message: 'User registered successfully!',
-        user: {
-            name: user.name,
-            email: user.email
-        },
-        token: token
+    res.render('welcome', {
+        user: { name: user.name, email: user.email }
     });
 });
+
 
 
 // Login a user
