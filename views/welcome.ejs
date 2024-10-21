@@ -1,146 +1,164 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
+    <%- include('./partials/insidenavbar') %>
     <title>Document</title>
-
-    <%- include('./partials/head') %>
    <style>
-            
-            body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-            flex-direction: column;
-        }
-
-        h1, p {
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            color: #343a40;
-        }
-
-        p {
-            font-size: 1.2em;
-            color: #6c757d;
-        }
-
-    
-        img {
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-            display: block;
-            margin: 20px auto;
-            border: 2px solid #6c757d;
-        }
-
-        
-        .button {
-            background-color: #343a40;
-            color: white;
-            padding: 10px 20px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
-        }
-
-        .button:hover {
-            background-color: #495057;
-        }
-
-        
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #343a40;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
-        li {
-            float: left;
-        }
-
-        li a {
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-size: 18px;
-        }
-
-        li a:hover {
-            background-color: #495057;
-        }
-
-    
-        .material-icons {
-            font-size: 30px;
-        }
-
-    
-        @media(max-width: 600px) {
-            h1 {
-                font-size: 2em;
-            }
-
-            p {
-                font-size: 1em;
-            }
-
-            img {
-                width: 120px;
-                height: 120px;
-            }
-        }
+      /* Navigation Bar */
+/* Navigation Bar *//* Navigation Bar */
+/* Navigation Bar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #007BFF;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding-top: 10px;
+}
+/* Ensure the rest of the page starts below the navbar */
+body {
+    /* padding-top: 70px; This adds space below the navbar for content */
+    background-color: #F0F2F5;
+    font-family: 'Roboto', sans-serif;
+    color: #343A40;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+}
+html {
+    height: 100%; /* Ensure the root element takes full height for scrolling */
+    overflow-y: auto; /* Allow scrolling if content exceeds the screen height */
+}
+.cardplace {
+    background-color: white;
+    padding: 100px;
+    border-radius: 15px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    margin: 0 20px;
+    margin-bottom: 100px;
+}
+h1 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+p1 {
+    font-size: 1.2em;
+    color: #6C757D;
+    display: block;
+    margin-bottom: 20px;
+}
+/* Profile Image Styling */
+#profile {
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    display: block;
+    margin: 20px auto;
+    border: 4px solid #FFA500;
+}
+/* Button Styling */
+.button {
+    background-color: #FFA500;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.button:hover {
+    background-color: #FF8C00;
+}
+/* Bottom Navigation Bar */
+.cantainer {
+    /* position: fixed; */
+    bottom: 0;
+    width: 100%;
+    background-color: #007BFF;
+    padding: 15px 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+li {
+    margin: 0 15px;
+}
+li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    text-align: center;
+    transition: color 0.3s ease;
+}
+li a:hover {
+    color: #F8F9FA;
+}
+.material-icons {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+/* Logo Styling */
+img {
+    width: 40px;
+    height: auto;
+}
    </style>
     <body data-spy="scroll" data-target=".fixed-top">
         <!-- Navigation -->
-        <%- include('./partials/navbar', {currentPage: 'home'}) %>
+        <%- include('./partials/insidenavbar') %>
         <!-- end of navigation -->
-         <h1 id="userDisplay"> Hello! </h1>
-         <p1>you still havent chosen a profile picture</p1>
-         <img src="https://i.postimg.cc/s21CdrnY/blank-profile-picture-973460-960-720.webp" alt="background">
-          <button type="button" class="regular button grey" onclick="nextPage()"> lets start training!</button>
-
-
-          <div class="cantainer">
-            <ul> 
-        <li style="float:right"><a href="#" class="nav_link nav_link">
-          <i class="material-icons" style="font-size:35px;">account_circle</i>
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <img src="https://i.postimg.cc/FK3CTCDm/Rishon-Fit-1.png" alt="logo" width="35" height="35">
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <i class="material-icons" style="font-size:35px;">search</i>
-        </a></li>
-      </ul>
-          </div>
+        <div class="cardplace">
+            <h1 id="userDisplay">ברוך הבא</h1>
+            <p1 id="text1">עדיין לא בחרת תמונת פרופיל</p1>
+            <img id="profile" src="https://i.postimg.cc/s21CdrnY/blank-profile-picture-973460-960-720.webp" alt="Profile">
+            <button type="button" class="button" onclick="nextPage()">בוא נצא להתאמן!</button>
+        </div>
+        <div class="cantainer">
+            <ul>
+                <li><a href="#" class="nav__link">
+                    <i class="material-icons">account_circle</i>
+                    חשבון
+                </a></li>
+                <li><a href="#" class="nav__link">
+                    <img src="https://i.postimg.cc/FK3CTCDm/Rishon-Fit-1.png" alt="Logo">
+                </a></li>
+                <li><a href="#" class="nav__link">
+                    <i class="material-icons">search</i>
+                    חפש
+                </a></li>
+            </ul>
+        </div>
          <script>
            function nextPage(){
-            location.href="views\index.ejs";}
-
+            location.href="/chooseRoute";}
           function displayName(){
             //this function displays hi(username) after the log in was succssessfull in the welcome page.
             const username = localStorage.getItem('username');
            // Check if the username exists
-            document.getElementById('userDisplay').innerText = ("hello "+username);}
-
+            document.getElementById('userDisplay').innerText = ("ברוך הבאה, "+username);}
           function getUserName(){
             //supposed to be in the login/sign up/register page to send the username here so the welcome page will display it.
            const  user=document.getElementsByClassName("UserName")
