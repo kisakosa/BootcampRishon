@@ -25,7 +25,7 @@
 
         .icons {
             width: 100%;
-            text-align: right;
+            text-align: left;
         }
         .mapicons{
             width:50%;
@@ -67,7 +67,12 @@
             align-content:center;
             align-items:center;
         }
-
+        .fa-star{
+            color: #f16624;
+        }
+        .fa-star:hover{
+            color:hsl(19, 88%, 42%);
+        }
         @media screen and (max-width: 500px) {
             #map{
                 height: 275px
@@ -96,8 +101,8 @@
     <div class="center">
         <div class="mapicons">
             <div class="icons" style="align-self: flex-end;">
-                <i class="fa fa-share-alt" id="share" aria-hidden="true"></i>
-                <i class="far fa-star" aria-hidden="true"></i>
+                <!-- <i class="fa fa-share-alt" id="share" aria-hidden="true"></i> -->
+                <i id="toggleSave" class="far fa-star" aria-hidden="true"></i>
             </div>
         
             <div id="map"></div>
@@ -147,7 +152,6 @@
             try{
                 const response = await fetch(URL)
                 const data = await response.json()
-
                 return data
             }catch(err){
                 throw new Error(err)
@@ -263,8 +267,84 @@
             window.location.href = `/list?id=${ID}`;  // Redirects to the list page
         });
 
-        document.getElementById("share").addEventListener("click", () => {
-            
+        const saveButton = document.getElementById("toggleSave");
+        const SAVE_URL = `${PROTOCOL}/api/v1/savedRoutes/`;
+        const routeSaved = (routes, routeId) => {
+            for (let i = 0; i < routes.length; i++) {
+                if (routes[i]._id === routeId) {
+                    return true; 
+                }
+            }
+            return false;
+        };
+        const getRoutes = async () => {
+            try{
+                const response = await fetch(SAVE_URL)
+                const data = await response.json()
+                return data
+            }catch(err){
+                throw new Error(err)
+                return []
+            }
+        };
+        const saveRoute = async (routeId) => {
+            try {
+                const response = await fetch(`${SAVE_URL}${routeId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to save route');
+                }
+                const savedRoutes = await response.json();
+                console.log('Route saved successfully:', savedRoutes);
+            } catch (error) {
+                console.error('Error saving route:', error);
+            }
+        };
+        const deleteRoute = async (routeId) => {
+            try {
+                const response = await fetch(`${SAVE_URL}${routeId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to delete route');
+                }
+                const updatedSavedRoutes = await response.json();
+                console.log('Route deleted successfully:', updatedSavedRoutes);
+            } catch (error) {
+                console.error('Error deleting route:', error);
+            }
+        };
+        getRoutes().then((savedArr) => {
+            let saved = routeSaved(savedArr, ID)
+            saveButton.addEventListener('click', async () => {
+                if (saved){
+                    deleteRoute(ID)
+                    saveButton.classList.remove('fa'); 
+                    saveButton.classList.add('far'); 
+                } else{
+                    saveRoute(ID)
+                    saveButton.classList.remove('far'); 
+                    saveButton.classList.add('fa'); 
+                }
+                saved = !saved
+            });
+            if(!saved){
+                saveButton.classList.remove('fa'); 
+                saveButton.classList.add('far'); 
+            }
+            else{
+                saveButton.classList.remove('far'); 
+                saveButton.classList.add('fa'); 
+            }
         })
     </script>
 </body>
