@@ -27,7 +27,7 @@ router.get('/map', async (req, res) => {
 });
 
 router.get('/index1', async (req, res) => {
-    return res.render('index1', { title: 'index1' });
+    return res.render('index1', { title: 'index' });
 });
 
 
