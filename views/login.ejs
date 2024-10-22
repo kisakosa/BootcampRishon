@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <%- include('./partials/head') %>
@@ -10,19 +8,21 @@
     <%- include('./partials/navbar', { currentPage: 'login' }) %>
     <div class="cardplace" id="main">
         <div class = "nicetomeetyou">
-            <h1>Login page</h1>
-            <h1>Welcome back!</h1>
+            <h1>התחברות</h1>
+            <h1>!ברוך הבאה</h1>
         </div>
         <div id="message" class="message"></div>
         <form id="loginForm" action="/api/v1/auth/login" method="POST" class="card">
             <button type="button" class="x">x</button>
-            <label for="email">Email:</label>
+            <label for="email">דוא"ל</label>
             <input type="email" class="Email" name="email" id="email" placeholder="example@example.com" required>
-            <label for="password">Password:</label>
+            <label for="password">סיסמה</label>
             <input type="password" class="password" name="password" id="password" placeholder="Enter your password" required>
-            <button type="submit" class = SubmitButton >Done</button>
+            <p> אין חשבון? <a href="/register">הירשם</a></p>
+            <button type="submit" class = SubmitButton >כניסה</button>
         </form>
     </div>
+
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (event) => {
             event.preventDefault(); // Prevent form submission
