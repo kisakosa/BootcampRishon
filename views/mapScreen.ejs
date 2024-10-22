@@ -28,7 +28,7 @@
             text-align: right;
         }
         .mapicons{
-            width:40%
+            width:50%;
         }
         i {
             font-size: 24px;
@@ -67,6 +67,22 @@
             align-content:center;
             align-items:center;
         }
+
+        @media screen and (max-width: 500px) {
+            #map{
+                height: 275px
+            }
+        }
+        @media screen and (max-width: 440px){
+            #map{
+                height: 240px
+            }
+        }
+        @media screen and (max-width: 360px){
+            #map{
+                height: 220px
+            }
+        }
     </style>
 </head>
 
@@ -80,7 +96,7 @@
     <div class="center">
         <div class="mapicons">
             <div class="icons" style="align-self: flex-end;">
-                <i class="fa fa-share-alt" aria-hidden="true"></i>
+                <i class="fa fa-share-alt" id="share" aria-hidden="true"></i>
                 <i class="far fa-star" aria-hidden="true"></i>
             </div>
         
@@ -140,12 +156,44 @@
         }
 
         // Initialize the map object
-        const map = L.map('map') 
+        const map = L.map('map', {zoomSnap: 0.5})
 
         // Setting map layer from OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
+        const icons = {
+            "התחלת מסלול אופניים": "biking.png",
+            "מסלול אופניים": "biking.png",
+            "סיום מסלול אופניים": "biking.png",
+            "סיום מסלול הליכה.ריצה": "running.png",
+            "התחלת מסלול הליכה.ריצה": "running.png",
+            "אולם ספורט": "field.png",
+            "נקודת מפגש קבוצת הליכה": "walking.png",
+            "מגרש טניס": "tennis.png",
+            "שולחן פינג פונג": "pingpong.png",
+            "מגרש כדורגל": "football.png",
+            "מגרש כדורסל": "basketball.png",
+            "מתקני כושר": "dumbbell.png",
+            "אימון כוח": "dumbbell.png",
+            "default": "locationMark.png"
+        }
+
+        const getIcon = (tags) => {
+            console.log(tags)
+            for(tag of tags){
+                if(tag.category.name !== "סוג מתקן"){
+                    continue
+                }
+                console.log(icons[tag.name])
+                console.log(tag)
+                return icons[tag.name] ? icons[tag.name] : icons["default"]
+            }
+            console.log("DEFAULT")
+            return icons["default"]
+        }
+        
 
         // Fetching the route data from the API
         const addRouteToMap = async() => {
@@ -163,12 +211,20 @@
             // Loop through each place to add markers and collect waypoints
             for(place of route.places){
                 const coordinates = [place.coordinates.latitude, place.coordinates.longitude]; // [latitude, longitude]
-                L.marker(coordinates).addTo(map).bindPopup(place.name); // Create a marker for each place
+                console.log(getIcon(place.tags))
+                console.log(place)
+                L.marker(coordinates, {
+                    icon: L.icon({
+                        iconUrl: `/images/icons/${getIcon(place.tags)}`,
+                        iconSize: [42, 42], 
+                    })
+
+                    }).addTo(map).bindPopup(place.name); // Create a marker for each place
                 waypoints.push(L.latLng(coordinates)); // Add coordinates to the waypoints array
                 coordsFinal.push(coordinates)
             };
-
-            map.setView(getCenter(coordsFinal), 12);
+            const center = getCenter(coordsFinal)
+            map.setView(center, 12)
 
             // Add a single routing control for all the waypoints
             L.Routing.control({
@@ -179,16 +235,26 @@
                     return null;  // Prevent adding additional markers for waypoints
                 },
                 show: false,
-                draggableWaypoints: false
+                draggableWaypoints: false,
+                fitSelectedRoutes: true,
+                lineOptions: {
+                    addWaypoints: false,
+                    styles: [{ color: "#f16624", weight: 3 }]
+                },
             }).addTo(map);
+
         }
 
         addRouteToMap();
 
         // Event listener for the button to redirect to list view
-        document.getElementById("toggleListView").addEventListener("click", function () {
+        document.getElementById("toggleListView").addEventListener("click", () => {
             window.location.href = `/list?id=${ID}`;  // Redirects to the list page
         });
+
+        document.getElementById("share").addEventListener("click", () => {
+            
+        })
     </script>
 </body>
 </html>
