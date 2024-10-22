@@ -63,15 +63,23 @@
                     });
 
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        const errorData = await response.json();
+                        if (response.status === 400 && errorData.error === 'Email already exists') {
+                            throw new Error('Email already exists');
+                        } else {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                    }
+                    else {
+                        window.location.href = '/login';
                     }
 
                     const data = await response.json();
                     console.log(data);
-                    // Handle successful registration, e.g., redirect to a success page
                 } catch (error) {
-                    console.error('Error:', error);
-                    // Handle the error, e.g., display an error message to the user
+                    console.error('Error:', error.message);
+                    alert(error.message);
+                    window.location.reload();
                 }
             }
         </script>
