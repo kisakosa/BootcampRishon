@@ -37,31 +37,42 @@
             </form>
         </div>
         <script>
-
-            function SendData() {
-                
-                event.preventDefault()
+            async function SendData() {
+                event.preventDefault();
                 const userName = document.querySelector('.UserName').value;
                 const email = document.querySelector('.Email').value;
                 const password = document.querySelector('.password').value;
 
+                const PROTOCOL = window.location.protocol;
+                const URL = `/api/v1/users`;
 
-                const PROTOCOL = window.location.protocol
-                const URL = `/api/v1/users`
-                fetch(URL, {
-                    method: 'POST',
-                    headers: {
-                    "Content-Type": 'application/json',
-                    Accept:"application/json",
-                },
-                    body: JSON.stringify({
-                        name: userName,
-                        email: email,
-                        role: "user",
-                        password: password,
-                        savedRoutes: [],
-                    })
-                }).then(response=>console.log(response))
-            }; 
+                try {
+                    const response = await fetch(URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: userName,
+                            email: email,
+                            role: 'user',
+                            password: password,
+                            savedRoutes: [],
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log(data);
+                    // Handle successful registration, e.g., redirect to a success page
+                } catch (error) {
+                    console.error('Error:', error);
+                    // Handle the error, e.g., display an error message to the user
+                }
+            }
         </script>
 </body>
