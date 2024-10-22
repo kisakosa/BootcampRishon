@@ -36,7 +36,7 @@
                         button.style.height = "60px";
                         button.classList.add('btn', 'btn-secondary', 'm-2', 'col-2'); // Optionally, add Bootstrap classes for styling
                         button.onclick = () => {
-                            alert(`Tag selected: ${tag.name}`);
+                            filterByTag(tag.name)
                         };
                         console.log(tag.name)
                         // Hardcoded category assignment
@@ -53,8 +53,22 @@
                             document.getElementById('typeMetkan').appendChild(button);
                         }
                     });
+                    
                 })
                 .catch(error => console.error('Error fetching tags:', error));
+        }
+        const filterByTag = (tag) => {
+            const filteredData = allData.filter(training =>
+                training.name.includes(tag) || training.description.includes(tag)
+            );
+            console.log(filteredData.length);
+            if (filteredData.length>0){
+                populateFilteredResults(filteredData);
+            }
+            else{
+                const allContainer = document.getElementById('all');
+                    allContainer.innerHTML = '<h1 class="text-end">אין מידע</h1>'
+            }
         }
         // Call fetchData2 when the script runs
         fetchData2();
