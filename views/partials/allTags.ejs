@@ -21,7 +21,7 @@
               
                     button.classList.add('btn', 'btn-dark', 'm-2','col-4'); // Optionally, add Bootstrap classes for styling
                     button.onclick = () => {
-                        alert(`Tag selected: ${tag.name}`);
+                        filterByTag(tag.name)
                         // You can replace this with any action you want to trigger on button click
                     };
                     container.appendChild(button); // Append the button to the container
@@ -35,7 +35,16 @@
         const filteredData = allData.filter(training => 
             training.name.includes(tag) || training.description.includes(tag)
         );
-        populateFilteredResults(filteredData);
+        console.log(filteredData.length);
+        if (filteredData.length>0){
+            populateFilteredResults(filteredData);
+
+        }
+        else{
+            const allContainer = document.getElementById('all');
+                allContainer.innerHTML = '<h1 class="text-end">אין מידע</h1>'
+        }
+        
     }
 
     // Call fetchData2 when the script runs
