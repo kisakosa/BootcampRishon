@@ -179,80 +179,46 @@
             `
         }
 
-        const toRadians = (degrees) => degrees * (Math.PI / 180);
-
-        const haversine = (lat1, lon1, lat2, lon2) => {
-            const R = 6371000;
-            
-            console.log(lat1, lon1)
-            console.log(lat2, lon2)
-
-            const x1 = lat2 - lat1;
-            const dLat = toRadians(x1);  
-            const x2 = lon2 - lon1;
-            const dLon = toRadians(x2);  
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
-                            Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * 
-                            Math.sin(dLon/2) * Math.sin(dLon/2);  
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            const d = R * c; 
-
-            return d
-        }
-
         const formulateDistance = (distanceMeters) => {
             if (distanceMeters >= 1000) {
                 const km = (distanceMeters / 1000).toFixed(1);
                 return `${km} ק"מ`;
-            } else{ // if(distanceMeters >= 50) {
+            } else {
                 return `${Math.round(distanceMeters)} מ'`;
-            // }else{
-            //     return ""
             }
         }
 
-        const getDistance = (place1, place2) => {
-            const lat1 = place1.coordinates.latitude
-            const lon1 = place1.coordinates.longitude
-
-            const lat2 = place2.coordinates.latitude
-            const lon2 = place2.coordinates.longitude
-            distance = haversine(lat1, lon1, lat2, lon2)
-            console.log(distance)
-            return formulateDistance(distance)
-        }
-
-        const line = (place1, place2) =>{
+        const line = (index) => {
+            const distances = JSON.parse(sessionStorage.getItem('distances')) || [];
+            const distance = distances[index] || 0;
             return `
                 <div class="linecontainer">
                     <div class="line"></div>
-                    <h1 class="distanceText">${getDistance(place1, place2)}</h1>
+                    <h1 class="distanceText">${formulateDistance(distance)}</h1>
                 </div>
-
-            `
+            `;
         }
 
-        const placeDiv = (place, addLine, place2) => {
-            console.log(place2)
+        const placeDiv = (place, index, isLastPlace) => {
             return `
                 <div class="place">
                     <div class="card">
                         <h1 class="textInside">${place.name}</h1>
                     </div>
                     ${locationPin()}
-                    ${addLine ? line(place, place2) : ""} 
+                    ${!isLastPlace ? line(index) : ""} 
                 </div>
-            `
+            `;
         }
 
         const addToView = (data) => {
             nameText.textContent = data.name
 
-            for(let index in data.places){
-                index = parseInt(index)
-                const place = data.places[index]
+            for(let index = 0; index < data.places.length; index++){
+                const place = data.places[index];
+                const isLastPlace = index === data.places.length - 1;
 
-                placesDiv.innerHTML += placeDiv(place, index < data.places.length - 1, data.places[index + 1]);        
+                placesDiv.innerHTML += placeDiv(place, index, isLastPlace);        
             }
         }
 
