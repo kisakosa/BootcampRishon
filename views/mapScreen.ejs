@@ -207,24 +207,36 @@
             nameText.textContent = route.name;
 
             const waypoints = []; // Create an array to hold all the coordinates
-            const coordsFinal = []
+            const coordsFinal = [];
+            const distances = []; // Create an array to store the distances between waypoints
+
             // Loop through each place to add markers and collect waypoints
-            for(place of route.places){
+            for (let i = 0; i < route.places.length; i++) {
+                const place = route.places[i];
                 const coordinates = [place.coordinates.latitude, place.coordinates.longitude]; // [latitude, longitude]
-                console.log(getIcon(place.tags))
-                console.log(place)
                 L.marker(coordinates, {
                     icon: L.icon({
                         iconUrl: `/images/icons/${getIcon(place.tags)}`,
                         iconSize: [42, 42], 
                     })
-
-                    }).addTo(map).bindPopup(place.name); // Create a marker for each place
+                }).addTo(map).bindPopup(place.name); // Create a marker for each place
                 waypoints.push(L.latLng(coordinates)); // Add coordinates to the waypoints array
-                coordsFinal.push(coordinates)
-            };
-            const center = getCenter(coordsFinal)
-            map.setView(center, 12)
+                coordsFinal.push(coordinates);
+
+                // Calculate the distance to the next waypoint (except for the last waypoint)
+                if (i < route.places.length - 1) {
+                    const nextPlace = route.places[i + 1];
+                    const nextCoordinates = [nextPlace.coordinates.latitude, nextPlace.coordinates.longitude];
+                    const distance = L.latLng(coordinates).distanceTo(L.latLng(nextCoordinates));
+                    distances.push(distance);
+                }
+            }
+
+            // Store the distances in session storage
+            sessionStorage.setItem('distances', JSON.stringify(distances));
+
+            const center = getCenter(coordsFinal);
+            map.setView(center, 12);
 
             // Add a single routing control for all the waypoints
             L.Routing.control({
@@ -242,7 +254,6 @@
                     styles: [{ color: "#f16624", weight: 3 }]
                 },
             }).addTo(map);
-
         }
 
         addRouteToMap();
