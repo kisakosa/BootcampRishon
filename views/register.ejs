@@ -37,31 +37,50 @@
             </form>
         </div>
         <script>
-
-            function SendData() {
-                
-                event.preventDefault()
+            async function SendData() {
+                event.preventDefault();
                 const userName = document.querySelector('.UserName').value;
                 const email = document.querySelector('.Email').value;
                 const password = document.querySelector('.password').value;
 
+                const PROTOCOL = window.location.protocol;
+                const URL = `/api/v1/users`;
 
-                const PROTOCOL = window.location.protocol
-                const URL = `/api/v1/users`
-                fetch(URL, {
-                    method: 'POST',
-                    headers: {
-                    "Content-Type": 'application/json',
-                    Accept:"application/json",
-                },
-                    body: JSON.stringify({
-                        name: userName,
-                        email: email,
-                        role: "user",
-                        password: password,
-                        savedRoutes: [],
-                    })
-                }).then(response=>console.log(response))
-            }; 
+                try {
+                    const response = await fetch(URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: userName,
+                            email: email,
+                            role: 'user',
+                            password: password,
+                            savedRoutes: [],
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        if (response.status === 400 && errorData.error === 'Email already exists') {
+                            throw new Error('Email already exists');
+                        } else {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                    }
+                    else {
+                        window.location.href = '/login';
+                    }
+
+                    const data = await response.json();
+                    console.log(data);
+                } catch (error) {
+                    console.error('Error:', error.message);
+                    alert(error.message);
+                    window.location.reload();
+                }
+            }
         </script>
 </body>
