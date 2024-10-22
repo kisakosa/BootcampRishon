@@ -1,74 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="register.css">
-    <%- include('./partials/head') %>
-    <link rel="stylesheet" href="/css/register.css">
-    <!-- <link rel="ejs" href="/views/login.ejs"> -->
-    <style>
-        body {
-            background-image: src('ריאשון.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-    </style>
-</head>
-<body>
-    <%- include('./partials/navbar', {currentPage: 'register'}) %>
-    <div class="cardplace">
-        <form class="card" action="/register" method="POST" id="registerForm">
-            <h1 class="nicetomeetyou">!נעים להכיר</h1>
-            <button type="button" class="x">x</button>
-            <label for="UserName">שם</label><br>
-            <input type="text" class="UserName" name="name" id="UserName" required><br>
-            <label for="Email">דוא"ל</label><br>
-            <input type="email" class="Email" name="email" id="Email" required><br>
-            <label for="password">סיסמה</label><br>
-            <input type="password" class="password" name="password" id="password" required><br>
-            <p>כבר נרשמת?<a href="/login"> התחברות</a></p>
-            <button type="submit" class="SubmitButton">התחברות</button>
-        </form>
-    </div>
-    
-    <!-- JavaScript handler embedded in the EJS -->
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-    
-            const name = document.getElementById('UserName').value;
-            const email = document.getElementById('Email').value;
-            const password = document.getElementById('password').value;
-    
-            try {
-                const response = await fetch('/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name: name,
-                        email: email,
-                        password: password
-                    })
-                });
-    
-                if (response.ok) {
-                    alert("הצלחה");
-                    window.location.href = '/welcome';
-                } else {
-                    const errorMsg = await response.text();
-                    alert(errorMsg);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Something went wrong. Please try again later.');
-            }
-        });
-    </script>
-    
 
+<head>
+    <%- include('./partials/head') %>
+        <link rel="stylesheet" href="/css/register.css">
+        <!-- <link rel="ejs" href="/views/login.ejs"> -->
+        <style>
+            body {
+                background-image: src('ריאשון.png');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('./partials/navbar', {currentPage: 'register' }) %>
+
+        <div class="cardplace">
+            <form class="card">
+                <h1 class="nicetomeetyou">!נעים להכיר</h1>
+                <button type="button" class="x">x</button>
+                <label>שם</label><br>
+                <input type="text" class="UserName" required><br>
+                <label>דוא"ל</label><br>
+                <input type="email" class="Email" required><br>
+                <label>סיסמה</label><br>
+                <input type="password" class="password" required><br>
+
+                <p>כבר נרשמת?<a href="/login"> התחברות</a></p>
+                <button onclick="SendData()" type="submit" class="SubmitButton" required>התחברות</button>
+            </form>
+        </div>
+        <script>
+            async function SendData() {
+                event.preventDefault();
+                const userName = document.querySelector('.UserName').value;
+                const email = document.querySelector('.Email').value;
+                const password = document.querySelector('.password').value;
+
+                const PROTOCOL = window.location.protocol;
+                const URL = `/api/v1/users`;
+
+                try {
+                    const response = await fetch(URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: userName,
+                            email: email,
+                            role: 'user',
+                            password: password,
+                            savedRoutes: [],
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        if (response.status === 400 && errorData.error === 'Email already exists') {
+                            throw new Error('Email already exists');
+                        } else {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                    }
+                    else {
+                        window.location.href = '/login';
+                    }
+
+                    const data = await response.json();
+                    console.log(data);
+                } catch (error) {
+                    console.error('Error:', error.message);
+                    alert(error.message);
+                    window.location.reload();
+                }
+            }
+        </script>
 </body>
