@@ -2,13 +2,11 @@
 <html lang="en">
     <%- include('./partials/head') %>
     <head>
-        <link rel="stylesheet" href="welcome.css">
+        <link rel="stylesheet" href="index.css">
         <%- include('./partials/head') %>
-        <link rel="stylesheet" href="/css/welcome.css">
-        <!-- <link rel="ejs" href="/views/login.ejs"> -->
+        <link rel="stylesheet" href="/css/index.css">
         <style>
             body {
-                background-image: src('ריאשון.png');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -16,31 +14,31 @@
                 padding: 0;
                 font-family: Arial, sans-serif;
             }
-        </style>    </head>
+        </style>
+    </head>
 
-    <body data-spy="scroll" data-target=".fixed-top">
+    <body>
 
         <!-- Navigation -->
         <%- include('./partials/navbar', {currentPage: 'home'}) %>
         <!-- end of navigation -->
         
-        <div style="text-align: center;">
-            <h1 >!ברוכים הבאים לראשון בוטקאמפ</h1>
-            <h5 >השתמש <span class="text-primary">בתפריט ניווט </span>כדי לעבור בין עמודים</h5>
+        <div class="container">
+            <h1>!ברוכים הבאים לראשון בוטקאמפ</h1>
+            <h5>השתמש <span class="text-primary">בתפריט ניווט</span> כדי לעבור בין עמודים</h5>
+
+            <a href="/welcome">
+                <button class="button small grey">כניסה ללא חשבון</button>
+            </a>
+
+            <a href="/register">
+                <button class="button small black">הרשמה</button>
+            </a>
+
+            <a href="/login">
+                <button class="button small orange">התחברות</button>
+            </a>
         </div>
-        <a href="/welcome">
-            <button class="button small grey">כניסה ללא חשבון</button>
-        </a>
-        
-        <a href="/register">
-            <button class="button small black">הרשמה</button>
-        </a>
-        
-        <a href="/login">
-            <button class="button small orange">התחברות</button>
-        </a>
-                
-            
 
     </body>
 </html>

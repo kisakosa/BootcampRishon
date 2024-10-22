@@ -1,0 +1,42 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.button {
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  color: white;
+  padding: 10px 20px; /* Increase padding for better appearance */
+  margin: 10px 5px;   /* Add margin to space between buttons */
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.small {
+  font-size: 12px;
+  width: 150px; /* Set fixed width for uniform button sizes */
+}
+
+.grey {
+  background-color: #6c6c6c; 
+}
+
+.black {
+  background-color: black; 
+}
+
+.orange {
+  background-color: #f16624;
+}
+
+/* Center the buttons using flexbox */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh; /* Full height of the viewport */
+}
