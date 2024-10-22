@@ -35,6 +35,7 @@
                         button.textContent = tag.name; // Set the button text to the tag name
                         button.style.height = "60px";
                         button.classList.add('btn', 'btn-secondary', 'm-2', 'col-2'); // Optionally, add Bootstrap classes for styling
+                        button.style.borderRadius = '35px';
                         button.onclick = () => {
                             filterByTag(tag.name)
                         };
