@@ -17,28 +17,31 @@
         </style>
     </head>
 
-    <body>
 
-        <!-- Navigation -->
-        <%- include('./partials/navbar', {currentPage: 'home'}) %>
-        <!-- end of navigation -->
-        
-        <div class="container">
-            <h1>!ברוכים הבאים לראשון בוטקאמפ</h1>
-            <h5>השתמש <span class="text-primary">בתפריט ניווט</span> כדי לעבור בין עמודים</h5>
+        <body data-spy="scroll" data-target=".fixed-top">
 
+            <!-- Navigation -->
+            <%- include('./partials/navbar', {currentPage: 'home'}) %>
+            <!-- end of navigation -->
+            
+            <div style="text-align: center;">
+                <h1 >!ברוכים הבאים לראשון בוטקאמפ</h1>
+                <h5 >השתמש <span class="text-primary">בתפריט ניווט </span>כדי לעבור בין עמודים</h5>
+            </div>
+                
+          <div id="buttons">
+                <a href="/register">
+                    <button class="button small black">הרשמה</button>
+                </a>
+                
+                <a href="/login">
+                    <button class="button small orange">התחברות</button>
+                </a>
+            </div>
             <a href="/welcome">
-                <button class="button small grey">כניסה ללא חשבון</button>
+                <button class="button small grey">כניסה ללא חשבון</button>      
             </a>
-
-            <a href="/register">
-                <button class="button small black">הרשמה</button>
-            </a>
-
-            <a href="/login">
-                <button class="button small orange">התחברות</button>
-            </a>
-        </div>
-
-    </body>
-</html>
+                
+    
+        </body>
+    </html>
