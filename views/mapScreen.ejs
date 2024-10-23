@@ -126,11 +126,6 @@
                 margin: 10px auto;
             }
 
-
-            /* .info-item {
-                margin: 0;
-            } */
-
             .description {
                 margin-top: 10px;
                 display: inline;
@@ -159,21 +154,15 @@
             <br>
             <h1 id="name" class="nametxt">שם האימון </h1>
 
-            <!-- <h5 id="duration">זמן משוער</h5>
-            <h5 id="distance">מרחק</h5>
-            <h5 id="description">תיאור</h5> -->
-
             <div class="info-block">
                 <span id="duration" class="info-item"></span>
                 <p style="font-weight: bold; margin: 0 12px;"> | </p>
                 <span id="distance" class="info-item"></span>
             </div>
-            <!-- <button id="toggle-description">הראה עוד</button> -->
-            <div class="description-container"> <!-- DIV חדש -->
+            <div class="description-container">
                 <p id="description" class="description"></p>
             </div>
             <span id="toggle-description" class="toggle-text">הראה הכל...</span>
-
             <span id="show-less" class="toggle-text" style="margin-bottom: 15px;">הראה פחות</span>
 
             <div class="center">
@@ -284,8 +273,7 @@
                 }
 
                 function getCharacterLimit() {
-                    const screenWidth = window.innerWidth; // רוחב המסך הנוכחי
-
+                    const screenWidth = window.innerWidth; 
                     if (screenWidth < 600) {
                         return 40;
                     } else if (screenWidth < 800) {
@@ -315,49 +303,31 @@
 
                     description.textContent = route.description;
 
-                    const charLimit = getCharacterLimit(); // קבלת מספר התווים המותר
+                    const charLimit = getCharacterLimit(); 
 
-                    const shortDescription = route.description.slice(0, charLimit); // חותך את התיאור לחלק הראשון
+                    const shortDescription = route.description.slice(0, charLimit); 
 
                     if (route.description.length > shortDescription.length) {
-                        description.textContent = shortDescription; // אם התיאור ארוך, הצג את הקצר
+                        description.textContent = shortDescription; 
                         showLess.style.display = "none";
                     } else {
-                        description.textContent = route.description; // אם התיאור קצר, הצג את המלא
-                        toggleText.style.display = 'none'; // אם התיאור קצר, הסתר את כפתור "הראה עוד"
+                        description.textContent = route.description; 
+                        toggleText.style.display = 'none'; 
                         showLess.style.display = "none";
                     }
 
                     toggleText.addEventListener("click", function () {
-                        // if (description.textContent === shortDescription) {
-                        description.textContent = route.description; // מציג את התיאור המלא
-                        // toggleText.textContent = "הראה פחות"; // משנה את הכיתוב
+                        description.textContent = route.description;
                         showLess.style.display = "block";
                         toggleText.style.display = "none";
 
                     });
 
                     showLess.addEventListener("click", function () {
-                        description.textContent = shortDescription; // חוזר לחלק הקטן
-                        // toggleText.textContent =  "הראה עוד..."; // משנה את הכיתוב
+                        description.textContent = shortDescription; 
                         showLess.style.display = "none";
                         toggleText.style.display = "inline";
                     })
-
-                    // הוספת אירוע ללחיצה על הכפתור
-                    // toggleText.addEventListener("click", function () {
-                    //     if (description.textContent === shortDescription) {
-                    //         description.textContent = route.description; // מציג את התיאור המלא
-                    //         // toggleText.textContent = "הראה פחות"; // משנה את הכיתוב
-                    //     document.getElementById("shoe-less").style.display="block";
-                    //     toggleText.style.display="none";
-                    //     } else {
-                    //         description.textContent = shortDescription; // חוזר לחלק הקטן
-                    //         // toggleText.textContent =  "הראה עוד..."; // משנה את הכיתוב
-                    //         document.getElementById("show-less").style.display="none";
-                    //         toggleText.style.display="flex";
-                    //     }
-                    // });
 
                     const waypoints = []; // Create an array to hold all the coordinates
                     const coordsFinal = [];
