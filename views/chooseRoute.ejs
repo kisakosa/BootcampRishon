@@ -2,8 +2,13 @@
 
     <%- include('./partials/navbar', { currentPage: 'register' }) %>
         <style>
+            .card-body {
+                background-color: #F16624;
+                border-radius: 20px;
+            }
+
             body{
-                color: #f16624;
+                color: black;
             }
 
             .x:hover {
@@ -12,8 +17,8 @@
             }
 
             #allTagsSection {
-
-                 direction: ltr; 
+                direction: rtl;
+                direction: ltr; 
 
                 display: none;
                 /* Initially hidden */
@@ -263,28 +268,28 @@
             }
 
             const populateFilteredResults = (filteredTrainings) => {
-            const allContainer = document.getElementById('all');
-            allContainer.innerHTML = ''; // Clear previous results
+                const allContainer = document.getElementById('all');
+                allContainer.innerHTML = ''; // Clear previous results
 
-            filteredTrainings.forEach((training, index) => {
-            const div = document.createElement('div');
-            div.style.cursor = "pointer";
-            div.onclick = () => {
-                window.location.href = `/map/${training._id}`;
-            };
-            allContainer.classList.add('row','justify-content-s', 'flex-row-reverse')
-            div.className = 'col-4 p-3  ';
-            div.innerHTML = `
-            <div class="card x ">
-                    <div class="card-body">
-                        <h5 class="card-title text-end">אימון ${index + 1}</h5>
-                     <p class="card-text text-end">${training.name}</p>
-                    </div>
-            </div>
-        `;
-        allContainer.appendChild(div);
-    });
-}
+                filteredTrainings.forEach((training, index) => {
+                const div = document.createElement('div');
+                div.style.cursor = "pointer";
+                div.onclick = () => {
+                    window.location.href = `/map/?id=${training._id}`;
+                };
+                allContainer.classList.add('row','justify-content-s', 'flex-row-reverse')
+                div.className = 'col-4 p-3  ';
+                div.innerHTML = `
+                <div class="card x ">
+                        <div class="card-body">
+                            <h5 class="card-title text-end">אימון ${index + 1}</h5>
+                        <p class="card-text text-end">${training.name}</p>
+                        </div>
+                </div>
+            `;
+            allContainer.appendChild(div);
+        });
+    }
 
             // Call init function when the page loads
             window.onload = init;
