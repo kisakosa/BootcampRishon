@@ -43,7 +43,7 @@
                 const password = document.querySelector('.password').value;
 
                 const PROTOCOL = window.location.protocol;
-                const URL = `/api/v1/users`;
+                const URL = `/api/v1/auth/register`;
 
                 try {
                     const response = await fetch(URL, {
@@ -78,7 +78,6 @@
                 } catch (error) {
                     console.error('Error:', error.message);
                     alert(error.message);
-                    window.location.reload();
                 }
             }
         </script>
