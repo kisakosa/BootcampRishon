@@ -1,50 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
     <%- include('./partials/head') %>
-    <head>
-        <link rel="stylesheet" href="index.css">
-        <%- include('./partials/head') %>
-        <link rel="stylesheet" href="/css/index.css">
-        <style>
-            body {
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-            }
-        </style>
-    </head>
-
-
-        <body data-spy="scroll" data-target=".fixed-top">
-
-            <!-- Navigation -->
-            <%- include('./partials/navbar', {currentPage: 'home'}) %>
-            <!-- end of navigation -->
+    <body data-spy="scroll" data-target=".fixed-top">
+        <!-- Navigation -->
+        <%- include('./partials/navbar', {currentPage: 'home'}) %>
+        <!-- end of navigation -->
+        
+        <div class="container-fluid d-flex flex-column justify-content-center align-items-center vh-100">
+            <h1 class="text-center">Welcome to Rishon Bootcamp!</h1>
+            <h5 class="mt-3 mb-auto">Use <span class="text-primary">navbar</span> to navigate between pages.</h5>
+            <a href="/login">
+                <button style="position: relative; right: 100px; bottom: 400px;">Login</button>
+            </a>
             
-            <div style="text-align: center;">
-                <h1 >!ברוכים הבאים לראשון בוטקאמפ</h1>
-                <h5 >השתמש <span class="text-primary">בתפריט ניווט </span>כדי לעבור בין עמודים</h5>
-            </div>
-                
-          <div id="buttons">
-                <a href="/register">
-                    <button class="button small black">הרשמה</button>
-                </a>
-                
-                <a href="/login">
-                    <button class="button small orange">התחברות</button>
-                </a>
-            </div>
-            <div id="buttons">
+            <a href="/register">
+                <button style="position: relative; left: 100px; bottom: 430px;">Sign Up</button>
+            </a>
 
             <a href="/welcome">
-                <button class="button small grey">כניסה ללא חשבון</button>      
+                <button style="position: relative; bottom: 395px;">Hurry? Continue as a guest</button>
             </a>
+
+
+
+
         </div>
-  
-        </div>
-        </body>
-    </html>
+    </body>
+</html>

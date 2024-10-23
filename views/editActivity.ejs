@@ -146,31 +146,10 @@
                     const activityId = urlParams.get('id');
 
                     if (activityId) {
-                        const newRouteData = JSON.parse(sessionStorage.getItem('newActivityData'));
-                        if (!newRouteData){ 
-                            fetchRouteData(activityId);
-                        }else{
-                            setData(newRouteData);
-                        }    
-                        
+                        fetchRouteData(activityId);
 
                         $('#addTagButton').on('click', function () {
                             const currentPath = window.location.pathname; // משוך את הנתיב הנוכחי
-
-                            const updatedActivity = {
-                                name: $('#activityName').val(),
-                                description: $('#activityDescription').val(),
-                                img: $('#activityImg').val(),
-                                youtube: $('#activityYT').val(),
-                                coordinates: {
-                                    longitude: $('#activityLongitude').val(),
-                                    latitude: $('#activityLatitude').val(),
-                                },
-                                tags: getSelectedTags(),
-                                isRelevant: true
-                            };
-                            
-                            sessionStorage.setItem('newActivityData', JSON.stringify(updatedActivity));
 
                             // בדוק אם currentPath ריק
                             if (!currentPath) {
@@ -185,22 +164,13 @@
                         });
 
                         $("#editActivityForm").on('submit', function (e) {
-                            e.preventDefault(); 
-                            sessionStorage.removeItem("newActivityData")
+                            e.preventDefault();
                             updateActivity(activityId);
                         });
                     }
 
                 });
 
-                const setData = (activity) => {
-                    $('#activityName').val(activity.name);
-                    $('#activityDescription').val(activity.description);
-                    $('#activityImg').val(activity.img);
-                    $('#activityYT').val(activity.youtube);
-                    $('#activityLongitude').val(activity.coordinates.longitude);
-                    $('#activityLatitude').val(activity.coordinates.latitude);
-                }
 
                 function fetchRouteData(activityId) {
                     fetch(`/api/v1/places/${activityId}`)
@@ -213,8 +183,13 @@
                         .then(data => {
                             console.log(data)
                             const activity = data;
-                            setData(activity)
-                            
+
+                            $('#activityName').val(activity.name);
+                            $('#activityDescription').val(activity.description);
+                            $('#activityImg').val(activity.img);
+                            $('#activityYT').val(activity.youtube);
+                            $('#activityLongitude').val(activity.coordinates.longitude);
+                            $('#activityLatitude').val(activity.coordinates.latitude);
 
                             if (activity.tags) {
                                 activity.tags.forEach(tagId => {

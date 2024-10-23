@@ -89,12 +89,12 @@
                     else if (fromPath.includes('/admin/update-route')) {
                         type = 'Route';
                         if (id)
-                            redirectPath += `?id=${id}`; 
+                            redirectPath += `/?id=${id}`; 
                     }
                     else if (fromPath.includes('/admin/edit-activity')) {
                         type = 'Place';
                         if (id)
-                            redirectPath += `?id=${id}`; 
+                            redirectPath += `/?id=${id}`; 
                     }
 
                     url = redirectPath;

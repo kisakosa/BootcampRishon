@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <%- include('./partials/head') %>
@@ -8,17 +10,17 @@
     <%- include('./partials/navbar', { currentPage: 'login' }) %>
     <div class="cardplace" id="main">
         <div class = "nicetomeetyou">
-            <h1>התחברות</h1>
-            <h1>ברוך\ה הבא\ה</h1>
+            <h1>Login page</h1>
+            <h1>Welcome back!</h1>
         </div>
         <div id="message" class="message"></div>
         <form id="loginForm" action="/api/v1/auth/login" method="POST" class="card">
-            <label for="email">דוא"ל</label>
+            <button type="button" class="x">x</button>
+            <label for="email">Email:</label>
             <input type="email" class="Email" name="email" id="email" placeholder="example@example.com" required>
-            <label for="password">סיסמה</label>
+            <label for="password">Password:</label>
             <input type="password" class="password" name="password" id="password" placeholder="Enter your password" required>
-            <a href="/register">אין חשבון? הרשמה</a>
-            <button type="submit" class = SubmitButton >כניסה</button>
+            <button type="submit" class = SubmitButton >Done</button>
         </form>
     </div>
     <script>
@@ -26,6 +28,7 @@
             event.preventDefault(); // Prevent form submission
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const messageElement = document.getElementById('message');
             try {
                 const response = await fetch('/api/v1/auth/login', {
                     method: 'POST',
@@ -36,16 +39,19 @@
                 });
                 if (!response.ok) {
                     const errorData = await response.json();
+                    messageElement.textContent = `Login failed: ${errorData.error}`;
+                    messageElement.classList.add('error');
                     console.error('Login failed:', errorData.error);
-                    alert("חשבון זה לא נמצא, נסו שוב");
                     return;
                 }
                 const data = await response.json();
                 console.log('Login successful:', data);
-                alert("התחברת בהצלחה");
-                window.location.href="/welcome";
+                // Redirect to welcome.ejs
+                window.location.href = '/welcome'; // Adjust the URL based on your routing
             } catch (error) {
                 console.error('Error:', error.message);
+                messageElement.textContent = `Error: ${error.message}`;
+                messageElement.classList.add('error');
             }
         });
     </script>

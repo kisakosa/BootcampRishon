@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
     <%- include('./partials/insidenavbar') %>
@@ -48,8 +49,7 @@ html {
 h1 {
     font-size: 2.5em;
     color: #333;
-    margin-bottom: 40px;
-    margin-top:3px;
+    margin-bottom: 10px;
 }
 p1 {
     font-size: 1.2em;
@@ -132,7 +132,8 @@ img {
         <!-- end of navigation -->
         <div class="cardplace">
             <h1 id="userDisplay">ברוך הבא</h1>
-            <img id="profile" src="https://i.ibb.co/qR7YGVn/200802067.png" alt="Profile">
+            <p1 id="text1">עדיין לא בחרת תמונת פרופיל</p1>
+            <img id="profile" src="https://i.postimg.cc/s21CdrnY/blank-profile-picture-973460-960-720.webp" alt="Profile">
             <button type="button" class="button" onclick="nextPage()">בוא נצא להתאמן!</button>
         </div>
         <div class="cantainer">
@@ -157,7 +158,7 @@ img {
             //this function displays hi(username) after the log in was succssessfull in the welcome page.
             const username = localStorage.getItem('username');
            // Check if the username exists
-            document.getElementById('userDisplay').innerText = ("ברוך הבא , "+username);}
+            document.getElementById('userDisplay').innerText = ("ברוך הבאה, "+username);}
           function getUserName(){
             //supposed to be in the login/sign up/register page to send the username here so the welcome page will display it.
            const  user=document.getElementsByClassName("UserName")

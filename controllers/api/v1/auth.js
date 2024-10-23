@@ -2,7 +2,6 @@ const User = require('../../../models/User'); // Import the User model
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('../../../utils/asyncHandler'); // Adjust the path as needed
-const passport = require('passport');
 
 // Register a new user
 exports.register = asyncHandler(async (req, res) => {
@@ -22,30 +21,28 @@ exports.register = asyncHandler(async (req, res) => {
     }
 
     const saltRounds = 10; // Adjust as needed
-    // user = new User({ name, email, password: await bcrypt.hash(password, saltRounds), role: 'user' });
-    User.register({ name, email, role: 'user' }, password, async (err, user) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ status: 'error', message: 'An internal server error occurred.' });
-        }
-        const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        const httpOnly = process.env.HTTP_ONLY === 'true';
+    user = new User({ name, email, password: await bcrypt.hash(password, saltRounds), role: 'user' });
+    await user.save();
 
-        res.cookie('authToken', token, {
-            httpOnly: httpOnly,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 3600000 // 1 hour
-        });
+    const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const httpOnly = process.env.HTTP_ONLY === 'true';
 
-        return res.send({ success: true, message: 'User registered successfully.' });
+    res.cookie('authToken', token, { 
+        httpOnly: httpOnly,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 3600000 // 1 hour
+    });
+
+    res.render('welcome', {
+        user: { name: user.name, email: user.email }
     });
 });
 
 
 
 // Login a user
-exports.login = asyncHandler(async (req, res, next) => {
+exports.login = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         return res.status(400).send('Email and password are required.');
@@ -61,32 +58,24 @@ exports.login = asyncHandler(async (req, res, next) => {
         return res.status(400).send('Invalid email or password.');
     }
 
-    passport.authenticate('local', function (err, user, info) {
-        if (info != undefined && (info.name == 'IncorrectPasswordError' || info.name == 'IncorrectUsernameError')) {
-            if (!user) { return res.status(401).send('user or password is incorrect'); }
-        }
-        if (err) {
-            console.log(info.name, 'name')
-            return console.log(err, 'err')
-        }
-        if (!user) { return res.status(401).send('user not found'); }
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+        return res.status(400).send('Invalid email or password.');
+    }
 
-        req.logIn(user, async function (err) {
-            const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            const httpOnly = process.env.HTTP_ONLY === 'true';
-            res.cookie('authToken', token, {
-                httpOnly: httpOnly,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                maxAge: 3600000 // 1 hour
-            }).send({
-                message: 'Logged in successfully.',
-                user: { name: user.name, email: user.email, role: user.role }
-            });
-        });
+    const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
+    const httpOnly = process.env.HTTP_ONLY === 'true';
 
-    })(req, res, next);
+    res.cookie('authToken', token, { 
+        httpOnly: httpOnly,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 3600000 // 1 hour
+    }).send({
+        message: 'Logged in successfully.',
+        user: { name: user.name, email: user.email, role: user.role }
+    });
 });
 
 // Logout a user
@@ -103,7 +92,7 @@ exports.profile = (req, res) => {
 // Update name or password
 exports.update = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
-
+    
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (email) {
         if (!emailPattern.test(email)) {

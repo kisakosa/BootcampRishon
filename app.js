@@ -7,8 +7,6 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session'); // Import express-session
 const MongoStore = require('connect-mongo'); // Import connect-mongo
 const mongoose = require('mongoose');
-const passport = require('passport');
-const User = require('./models/User');
 
 // Initialize Express application
 const app = express();
@@ -47,22 +45,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => console.log('DB connection is open'));
 db.set("useCreateIndex", true);
 console.log(process.env.MONGOURL);
-
-app.use(passport.initialize());
-
-app.use(passport.session());
-
-passport.serializeUser(function (user, done) {
-    done(null, user._id);
-});
-
-passport.deserializeUser(function (id, done) {
-    User.findById(id, function (err, user) {
-        done(err, user);
-    });
-});
-
-passport.use(User.createStrategy());
 
 // import upload route, define it as a static route that serves files from the 'uploads' directory
 app.use('/uploads', express.static('uploads'));

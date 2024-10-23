@@ -25,18 +25,9 @@ router.get('/register', async (req, res) => {
 router.get('/map', async (req, res) => {
     return res.render('mapScreen', { title: 'Map' });
 });
-
-router.get('/index1', async (req, res) => {
-    return res.render('index1', { title: 'index' });
-});
-
 router.get('/list', async (req, res) => {
     return res.render('listView', { title: 'List' });
 });
-router.get('/MyWorkouts', async (req, res) => {
-    return res.render('MyWorkouts', { title: 'MyWorkouts' });
-});
-
 
 // router.get('/customer', auth, checkRole('customer'), async (req, res) => {
 //     return res.render('customer', { title: 'Customer' });
