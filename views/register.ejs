@@ -32,7 +32,7 @@
                 <input type="password" class="password" required><br>
 
                 <p>כבר נרשמת?<a href="/login"> התחברות</a></p>
-                <button onclick="SendData()" type="submit" class="SubmitButton" required>התחברות</button>
+                <button onclick="SendData()" type="submit" class="SubmitButton" required>הרשמה</button>
             </form>
         </div>
         <script>
@@ -63,8 +63,9 @@
 
                     if (!response.ok) {
                         const errorData = await response.json();
-                        if (response.status === 400 && errorData.error === 'Email already exists') {
+                        if (response.status === 400) {
                             throw new Error('Email already exists');
+                            window.location.reload();
                         } else {
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
